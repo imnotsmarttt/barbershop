@@ -14,7 +14,8 @@ export class AuthService {
     constructor(
         private usersService: UsersService,
         private jwtService: JwtService
-    ) {}
+    ) {
+    }
 
     async validateUser(data: LoginDto): Promise<CleanUserDto | null> {
         const {username, password} = data
@@ -38,10 +39,10 @@ export class AuthService {
         const {username, password, password2} = data
         const userExist = await this.usersService.findOne({username})
         if (userExist) {
-            throw new HttpException(`Користувач з таким ім'ям зареєстрований`, HttpStatus.CONFLICT)
+            throw new HttpException(`Користувач з таким ім'ям зареєстрований`, HttpStatus.CONFLICT) // user with this username exist
         }
         if (password !== password2) {
-            throw new HttpException(`Паролі не співпадають`, HttpStatus.UNAUTHORIZED)
+            throw new HttpException(`Паролі не співпадають`, HttpStatus.UNAUTHORIZED) // password mismatch
         }
         const hashedPassword = await bcrypt.hash(password, BCRYPT_SALT)
         const user = await this.usersService.create({username, password: hashedPassword})
