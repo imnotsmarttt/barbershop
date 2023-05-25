@@ -11,11 +11,13 @@ import {VisitsModule} from './visits/visits.module';
 import {User} from "./users/users.entity";
 import {Visit} from "./visits/visit.entity";
 import {Service} from "./services/services.entity";
-import {Employee, Rank} from "./employee/employee.entity";
+import {Employee} from "./employee/employee.entity";
 import {Branch} from "./branch/branch.entity";
+import {Rank} from "./rank/rank.entity";
 
 import {DB_HOST, DB_NAME, DB_PASSWORD, DB_PORT, DB_USERNAME} from "../config";
-import { AdminModule } from './admin/admin.module';
+import {AdminModule} from './admin/admin.module';
+import {RankModule} from './rank/rank.module';
 
 
 @Module({
@@ -23,7 +25,7 @@ import { AdminModule } from './admin/admin.module';
         TypeOrmModule.forRoot({
             type: 'postgres',
             host: DB_HOST,
-            port: parseInt(DB_PORT),
+            port: DB_PORT,
             username: DB_USERNAME,
             password: DB_PASSWORD,
             database: DB_NAME,
@@ -44,7 +46,8 @@ import { AdminModule } from './admin/admin.module';
         BranchModule,
         ServicesModule,
         VisitsModule,
-        AdminModule
+        AdminModule,
+        RankModule
     ],
 })
 export class AppModule {

@@ -1,5 +1,5 @@
 import {Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn} from "typeorm";
-import {Rank} from "../employee/employee.entity";
+import {Rank} from "../rank/rank.entity";
 import {Visit} from "../visits/visit.entity";
 
 @Entity()

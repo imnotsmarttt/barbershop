@@ -9,9 +9,9 @@ import {
     Relation
 } from "typeorm";
 import {User} from "../users/users.entity";
-import {Service} from "../services/services.entity";
 import {Branch} from "../branch/branch.entity";
 import {Visit} from "../visits/visit.entity";
+import {Rank} from "../rank/rank.entity";
 
 @Entity()
 export class Employee {
@@ -55,19 +55,3 @@ export class Employee {
     visits: Visit[]
 }
 
-@Entity()
-export class Rank {
-    @PrimaryGeneratedColumn()
-    id: number
-
-    @Column({nullable: false})
-    rank: string
-
-    // employees
-    @OneToMany(() => Employee, (employee) => employee.rank)
-    employees: Employee[]
-
-    // services
-    @OneToMany(() => Service, (service) => service.rank)
-    services: Service[]
-}
