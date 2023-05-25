@@ -1,4 +1,9 @@
-import { Controller } from '@nestjs/common';
+import {Controller} from '@nestjs/common';
+import {RankService} from "./rank.service";
 
 @Controller('rank')
-export class RankController {}
+export class RankController {
+    constructor(
+        private readonly rankService: RankService
+    ) {}
+}

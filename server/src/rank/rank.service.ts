@@ -11,7 +11,19 @@ export class RankService {
         private readonly rankRepository: Repository<Rank>
     ) {}
 
+    async isExist(rank: string) {
+        const isExist = await this.rankRepository.findOneBy({rank})
+        if (!isExist) {
+            return false
+        }
+        return true
+    }
+
     async create(data: CreateOrUpdateRankDto): Promise<Rank> {
+        const isExist = await this.isExist(data.rank)
+        if (isExist) {
+            throw new HttpException('Rank is already exist', HttpStatus.CONFLICT)
+        }
         const createdRank = await this.rankRepository.create({...data})
         await this.rankRepository.save(createdRank)
         return createdRank

@@ -21,7 +21,6 @@ export class BranchController {
 
     @Get(':id')
     async getOne(@Param('id') id: number) {
-        console.log(typeof id)
         return await this.branchService.getOne({id})
     }
 
