@@ -19,7 +19,7 @@ export class AuthService {
 
     async validateUser(data: LoginDto): Promise<CleanUserDto | null> {
         const {username, password} = data
-        const user = await this.usersService.findOne({username})
+        const user = await this.usersService.getOne({username})
         if (user) {
             const comparePassword = await bcrypt.compare(password, user.password)
             if (comparePassword) {
@@ -37,7 +37,7 @@ export class AuthService {
 
     async register(data: RegisterDto): Promise<AuthFinishedDto> {
         const {username, password, password2} = data
-        const userExist = await this.usersService.findOne({username})
+        const userExist = await this.usersService.getOne({username})
         if (userExist) {
             throw new HttpException(`Користувач з таким ім'ям зареєстрований`, HttpStatus.CONFLICT) // user with this username exist
         }

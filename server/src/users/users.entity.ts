@@ -1,4 +1,4 @@
-import {Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, OneToOne} from "typeorm";
+import {Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, OneToOne, JoinColumn} from "typeorm";
 import {RoleEnum} from "../role/roles.enum";
 import {Employee} from "../employee/employee.entity";
 
@@ -17,6 +17,7 @@ export class User {
     role: RoleEnum
 
     @OneToOne(() => Employee, (employee) => employee.user, {nullable: true})
+    @JoinColumn()
     employee: Employee
 
     @CreateDateColumn({default: () => 'CURRENT_TIMESTAMP(6)'})

@@ -40,7 +40,7 @@ export class Employee {
     firedFrom: Date
 
     // branch
-    @ManyToOne(() => Branch, (branch) => branch.employees)
+    @ManyToOne(() => Branch, (branch) => branch.employees, {nullable: false})
     branch: Branch
 
     // rank

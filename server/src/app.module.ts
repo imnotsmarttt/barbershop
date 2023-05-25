@@ -15,6 +15,7 @@ import {Employee, Rank} from "./employee/employee.entity";
 import {Branch} from "./branch/branch.entity";
 
 import {DB_HOST, DB_NAME, DB_PASSWORD, DB_PORT, DB_USERNAME} from "../config";
+import { AdminModule } from './admin/admin.module';
 
 
 @Module({
@@ -42,7 +43,8 @@ import {DB_HOST, DB_NAME, DB_PASSWORD, DB_PORT, DB_USERNAME} from "../config";
         EmployeeModule,
         BranchModule,
         ServicesModule,
-        VisitsModule
+        VisitsModule,
+        AdminModule
     ],
 })
 export class AppModule {
