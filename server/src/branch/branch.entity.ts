@@ -22,6 +22,6 @@ export class Branch {
     closeAt: Date
 
     // employees
-    @OneToMany(() => Employee, (employee) => employee.branch)
+    @OneToMany(() => Employee, (employee) => employee.branch, {onDelete: "SET NULL"})
     employees: Employee[]
 }

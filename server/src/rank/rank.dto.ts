@@ -10,6 +10,9 @@ export class CreateOrUpdateRankDto {
     salaryPercent: number
 }
 
-export interface FindOneRankDto {
-    [key: string]: string | number
+
+export interface RankDto {
+    id: number;
+    rank: string;
+    salaryPercent: number
 }

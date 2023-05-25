@@ -1,7 +1,3 @@
-export interface FindOneUserDto {
-    [key: string]: string | number
-}
-
 export interface CreateUserDto {
     username: string;
     password: string

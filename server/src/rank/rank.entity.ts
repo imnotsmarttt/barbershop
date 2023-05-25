@@ -14,10 +14,10 @@ export class Rank {
     salaryPercent: number
 
     // employees
-    @OneToMany(() => Employee, (employee) => employee.rank)
+    @OneToMany(() => Employee, (employee) => employee.rank, {onDelete: 'RESTRICT'})
     employees: Employee[]
 
     // services
-    @OneToMany(() => Service, (service) => service.rank)
+    @OneToMany(() => Service, (service) => service.rank, {onDelete: 'CASCADE'})
     services: Service[]
 }

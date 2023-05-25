@@ -6,7 +6,6 @@ import {
     OneToMany,
     OneToOne,
     PrimaryGeneratedColumn,
-    Relation
 } from "typeorm";
 import {User} from "../users/users.entity";
 import {Branch} from "../branch/branch.entity";
@@ -36,22 +35,22 @@ export class Employee {
     @CreateDateColumn({nullable: false})
     hiredFrom: Date
 
-    @CreateDateColumn({nullable: true})
+    @CreateDateColumn({nullable: true, default: null})
     firedFrom: Date
 
     // branch
-    @ManyToOne(() => Branch, (branch) => branch.employees, {nullable: false})
+    @ManyToOne(() => Branch, (branch) => branch.employees,)
     branch: Branch
 
     // rank
     @ManyToOne(() => Rank, (rank) => rank.employees)
-    rank: Relation<Rank>
+    rank: Rank
 
     // user
-    @OneToOne(() => User, (user) => user.employee, {nullable: true})
+    @OneToOne(() => User, (user) => user.employee)
     user: User
 
-    @OneToMany(() => Visit, (visit) => visit.employee)
+    @OneToMany(() => Visit, (visit) => visit.employee, {onDelete: "CASCADE"})
     visits: Visit[]
 }
 

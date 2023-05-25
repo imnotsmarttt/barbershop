@@ -3,7 +3,7 @@ import {Reflector} from "@nestjs/core";
 import {RoleEnum} from "./roles.enum";
 import {ROLES_KEY} from "./role.decorator";
 import {JwtService} from "@nestjs/jwt";
-import {JWT_SECRET_KEY} from "../../config";
+import {JWT_SECRET_KEY} from "../config/config";
 
 @Injectable()
 export class RolesGuard implements CanActivate {

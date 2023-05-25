@@ -2,7 +2,8 @@ import {HttpException, HttpStatus, Injectable} from '@nestjs/common';
 import {Repository} from "typeorm";
 import {Branch} from "./branch.entity";
 import {InjectRepository} from "@nestjs/typeorm";
-import {CreateBranchDto, FindOneBranchDto, UpdateBranchDto} from "./branch.dto";
+import {CreateOrUpdateBranchDto} from "./branchDto";
+import {FindOneQueryDto} from "../config/general.dto";
 
 @Injectable()
 export class BranchService {
@@ -11,7 +12,7 @@ export class BranchService {
         private readonly branchRepository: Repository<Branch>
     ) {}
 
-    async create(data: CreateBranchDto): Promise<Branch> {
+    async create(data: CreateOrUpdateBranchDto): Promise<Branch> {
         const createdBranch = await this.branchRepository.create({...data})
         await this.branchRepository.save(createdBranch)
         return createdBranch
@@ -27,16 +28,16 @@ export class BranchService {
         }
     }
 
-    async getOne(query: FindOneBranchDto): Promise<Branch> {
+    async findOne(query: FindOneQueryDto): Promise<Branch> {
         const branch = await this.branchRepository.findOneBy(query)
         if (!branch) {
-            throw new HttpException('Not found', HttpStatus.NOT_FOUND)
+            throw new HttpException('Філіал не знайдено', HttpStatus.NOT_FOUND) // branch not found
         }
         return branch
     }
 
-    async update(id: number, data: UpdateBranchDto ): Promise<Branch> {
-        const branch = await this.getOne({id})
+    async update(id: number, data: CreateOrUpdateBranchDto ): Promise<Branch> {
+        const branch = await this.findOne({id})
 
         for (const [key, value] of Object.entries(data)) {
             branch[key] = value

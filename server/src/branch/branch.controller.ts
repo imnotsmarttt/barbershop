@@ -1,6 +1,6 @@
 import {Body, Controller, Delete, Get, HttpStatus, Param, Post, Put} from '@nestjs/common';
 import {BranchService} from "./branch.service";
-import {CreateBranchDto, UpdateBranchDto} from "./branch.dto";
+import {CreateOrUpdateBranchDto} from "./branchDto";
 
 @Controller('branch')
 export class BranchController {
@@ -9,7 +9,7 @@ export class BranchController {
     ) {}
 
     @Post()
-    async create(@Body() body: CreateBranchDto) {
+    async create(@Body() body: CreateOrUpdateBranchDto) {
         return await this.branchService.create(body)
     }
 
@@ -21,11 +21,11 @@ export class BranchController {
 
     @Get(':id')
     async getOne(@Param('id') id: number) {
-        return await this.branchService.getOne({id})
+        return await this.branchService.findOne({id})
     }
 
     @Put(':id')
-    async update(@Param('id') id: number, @Body() body: UpdateBranchDto) {
+    async update(@Param('id') id: number, @Body() body: CreateOrUpdateBranchDto) {
         return await this.branchService.update(id, body)
     }
 }

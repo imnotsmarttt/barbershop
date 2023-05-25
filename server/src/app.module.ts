@@ -15,7 +15,7 @@ import {Employee} from "./employee/employee.entity";
 import {Branch} from "./branch/branch.entity";
 import {Rank} from "./rank/rank.entity";
 
-import {DB_HOST, DB_NAME, DB_PASSWORD, DB_PORT, DB_USERNAME} from "../config";
+import {DB_HOST, DB_NAME, DB_PASSWORD, DB_PORT, DB_USERNAME} from "./config/config";
 import {AdminModule} from './admin/admin.module';
 import {RankModule} from './rank/rank.module';
 

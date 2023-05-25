@@ -1,8 +1,9 @@
 import {HttpException, HttpStatus, Injectable} from '@nestjs/common';
-import {CreateOrUpdateRankDto, FindOneRankDto} from "./rank.dto";
+import {CreateOrUpdateRankDto} from "./rank.dto";
 import {Repository} from "typeorm";
 import {Rank} from "./rank.entity";
 import {InjectRepository} from "@nestjs/typeorm";
+import {FindOneQueryDto} from "../config/general.dto";
 
 @Injectable()
 export class RankService {
@@ -13,10 +14,7 @@ export class RankService {
 
     async isExist(rank: string) {
         const isExist = await this.rankRepository.findOneBy({rank})
-        if (!isExist) {
-            return false
-        }
-        return true
+        return !!isExist
     }
 
     async create(data: CreateOrUpdateRankDto): Promise<Rank> {
@@ -50,10 +48,10 @@ export class RankService {
         }
     }
 
-    async findOne(query: FindOneRankDto): Promise<Rank> {
+    async findOne(query: FindOneQueryDto): Promise<Rank> {
         const rank = await this.rankRepository.findOneBy(query)
         if (!rank) {
-            throw new HttpException('Not found', HttpStatus.NOT_FOUND)
+            throw new HttpException('Посаду не знайдено', HttpStatus.NOT_FOUND) // rank not found
         }
         return rank
     }

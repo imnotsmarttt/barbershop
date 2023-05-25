@@ -2,7 +2,7 @@ import {HttpException, HttpStatus, Injectable} from '@nestjs/common';
 
 import {LoginDto, RegisterDto, AuthFinishedDto, JwtUserDto} from "./auth.dto";
 import * as bcrypt from 'bcrypt'
-import {BCRYPT_SALT} from "../../config";
+import {BCRYPT_SALT} from "../config/config";
 
 import {UsersService} from "../users/users.service";
 import {JwtService} from "@nestjs/jwt";
@@ -19,7 +19,7 @@ export class AuthService {
 
     async validateUser(data: LoginDto): Promise<CleanUserDto | null> {
         const {username, password} = data
-        const user = await this.usersService.getOne({username})
+        const user = await this.usersService.findOne({username})
         if (user) {
             const comparePassword = await bcrypt.compare(password, user.password)
             if (comparePassword) {
@@ -37,7 +37,7 @@ export class AuthService {
 
     async register(data: RegisterDto): Promise<AuthFinishedDto> {
         const {username, password, password2} = data
-        const userExist = await this.usersService.getOne({username})
+        const userExist = await this.usersService.findOne({username})
         if (userExist) {
             throw new HttpException(`Користувач з таким ім'ям зареєстрований`, HttpStatus.CONFLICT) // user with this username exist
         }

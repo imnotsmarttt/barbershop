@@ -16,7 +16,7 @@ export class User {
     @Column({nullable: false})
     role: RoleEnum
 
-    @OneToOne(() => Employee, (employee) => employee.user, {nullable: true})
+    @OneToOne(() => Employee, (employee) => employee.user, {nullable: true, onDelete: 'SET NULL'})
     @JoinColumn()
     employee: Employee
 
