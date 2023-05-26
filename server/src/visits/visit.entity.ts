@@ -1,6 +1,7 @@
-import {Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn} from "typeorm";
+import {Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn} from "typeorm";
 import {Employee} from "../employee/employee.entity";
 import {Service} from "../services/services.entity";
+import {VisitStatusEnumDto} from "./visit.dto";
 
 @Entity()
 export class Visit {
@@ -13,7 +14,7 @@ export class Visit {
     @Column({nullable: false})
     phoneNumber: string
 
-    @Column({nullable: false})
+    @Column({nullable: true})
     email: string
 
     @CreateDateColumn({nullable: false})
@@ -22,8 +23,8 @@ export class Visit {
     @CreateDateColumn({nullable: false})
     endDate: Date
 
-    @Column({nullable: false})
-    isEnd: boolean
+    @Column({nullable: false, default: VisitStatusEnumDto.notStarted})
+    status: VisitStatusEnumDto
 
     // employee
     @ManyToOne(() => Employee, (employee) => employee.visits, {nullable: false})

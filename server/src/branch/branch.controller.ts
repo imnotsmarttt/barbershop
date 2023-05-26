@@ -13,6 +13,11 @@ export class BranchController {
         return await this.branchService.create(body)
     }
 
+    @Put(':id')
+    async update(@Param('id') id: number, @Body() body: CreateOrUpdateBranchDto) {
+        return await this.branchService.update(id, body)
+    }
+
     @Delete(':id')
     async delete(@Param('id') id: number) {
         await this.branchService.deleteOne(id)
@@ -22,10 +27,5 @@ export class BranchController {
     @Get(':id')
     async getOne(@Param('id') id: number) {
         return await this.branchService.findOne({id})
-    }
-
-    @Put(':id')
-    async update(@Param('id') id: number, @Body() body: CreateOrUpdateBranchDto) {
-        return await this.branchService.update(id, body)
     }
 }

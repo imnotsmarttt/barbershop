@@ -1,4 +1,15 @@
-import {Body, Controller, Delete, Get, Param, Post, Put, UploadedFile, UseInterceptors} from '@nestjs/common';
+import {
+    Body,
+    Controller,
+    Delete,
+    Get,
+    HttpStatus,
+    Param,
+    Post,
+    Put,
+    UploadedFile,
+    UseInterceptors
+} from '@nestjs/common';
 import {EmployeeService} from "./employee.service";
 import {CreateOrUpdateEmployeeDto} from "./employee.dto";
 import {MulterPhotoInterceptor} from "../config/multer.config";
@@ -24,7 +35,11 @@ export class EmployeeController {
 
     @Delete(':id')
     async delete(@Param('id') id: number) {
-        return await this.employeeService.delete(id)
+        await this.employeeService.delete(id)
+        return {
+            message: 'Працівника видалено',
+            statusCode: HttpStatus.OK
+        }
     }
 
     @Get(':id')

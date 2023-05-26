@@ -28,15 +28,12 @@ export class CreateOrUpdateEmployeeDto {
     @IsOptional()
     firedFrom?: Date
 
-    // @IsNumber()
     @IsNotEmpty()
     branchId: number
 
-    // @IsNumber()
     @IsNotEmpty()
     rankId: number
 
-    // @IsNumber()
     @IsOptional()
     userId?: number
 }

@@ -16,7 +16,7 @@ import {BranchModule} from "../branch/branch.module";
     ],
     controllers: [EmployeeController],
     providers: [EmployeeService],
-    exports: [TypeOrmModule]
+    exports: [EmployeeService, TypeOrmModule]
 })
 export class EmployeeModule {
 }
