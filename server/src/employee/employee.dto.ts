@@ -1,6 +1,7 @@
 import {IsDateString, IsEmail, IsNotEmpty, IsNumberString, IsOptional, IsString} from "class-validator";
 import {BranchDto} from "../branch/branchDto";
 import {RankDto} from "../rank/rank.dto";
+import {ServiceDto, ServiceWithRankDto} from "../services/services.dto";
 
 export class CreateOrUpdateEmployeeDto {
     @IsString()
@@ -56,4 +57,9 @@ export interface EmployeeDto {
     firedFrom: Date | null;
     branch: BranchDto;
     rank: RankDto;
+}
+
+export interface EmployeeFreeTime {
+    start: string // date string
+    availableServices: ServiceWithRankDto[]
 }

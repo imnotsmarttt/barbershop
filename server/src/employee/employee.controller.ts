@@ -49,6 +49,6 @@ export class EmployeeController {
 
     @Get(':id/visits/:date')
     async freeVisits(@Param() params: FreeVisitsParamDto ) {
-        return await this.employeeService.getFreeVisits(params.id, params.date)
+        return await this.employeeService.getVisits(params.id, params.date)
     }
 }

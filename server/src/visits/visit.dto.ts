@@ -16,7 +16,7 @@ export class CreateOrUpdateVisitDto {
 
     @IsDateString()
     @IsNotEmpty()
-    startDate: string
+    startDatetime: string
 
     @IsNotEmpty()
     employeeId: number

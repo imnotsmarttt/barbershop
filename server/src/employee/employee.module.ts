@@ -11,6 +11,7 @@ import {UsersModule} from "../users/users.module";
 import {BranchModule} from "../branch/branch.module";
 import {VisitsModule} from "../visits/visits.module";
 import {ServicesModule} from "../services/services.module";
+import {CommonModule} from "../common/common.module";
 
 
 @Module({
@@ -20,6 +21,7 @@ import {ServicesModule} from "../services/services.module";
         BranchModule,
         forwardRef(() => VisitsModule),
         ServicesModule,
+        CommonModule,
         TypeOrmModule.forFeature([Employee])
     ],
     controllers: [EmployeeController],

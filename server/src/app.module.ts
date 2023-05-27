@@ -18,6 +18,7 @@ import {Rank} from "./rank/rank.entity";
 import {DB_HOST, DB_NAME, DB_PASSWORD, DB_PORT, DB_USERNAME} from "./config/config";
 import {AdminModule} from './admin/admin.module';
 import {RankModule} from './rank/rank.module';
+import { CommonModule } from './common/common.module';
 
 
 @Module({
@@ -47,7 +48,8 @@ import {RankModule} from './rank/rank.module';
         ServicesModule,
         VisitsModule,
         AdminModule,
-        RankModule
+        RankModule,
+        CommonModule
     ],
 })
 export class AppModule {

@@ -2,7 +2,7 @@ import {forwardRef, HttpException, HttpStatus, Inject, Injectable} from '@nestjs
 import {Repository} from "typeorm";
 import {Employee} from "./employee.entity";
 import {InjectRepository} from "@nestjs/typeorm";
-import {CreateOrUpdateEmployeeDto, EmployeeDto} from "./employee.dto";
+import {CreateOrUpdateEmployeeDto, EmployeeDto, EmployeeFreeTime} from "./employee.dto";
 import {BranchService} from "../branch/branch.service";
 import {RankService} from "../rank/rank.service";
 import {UsersService} from "../users/users.service";
@@ -11,6 +11,8 @@ import {unlink} from "fs/promises";
 import {VisitsService} from "../visits/visits.service";
 import {Visit} from "../visits/visit.entity";
 import {ServicesService} from "../services/services.service";
+import {ServiceWithRankDto} from "../services/services.dto";
+import {CommonService} from "../common/common.service";
 
 @Injectable()
 export class EmployeeService {
@@ -21,10 +23,12 @@ export class EmployeeService {
         private readonly rankService: RankService,
         private readonly usersService: UsersService,
         private readonly servicesService: ServicesService,
+        private readonly commonService: CommonService,
         @Inject(forwardRef(() => VisitsService))
         private readonly visitsService: VisitsService
     ) {
     }
+
 
     async create(data: CreateOrUpdateEmployeeDto, photo: Express.Multer.File | undefined): Promise<EmployeeDto> {
         const {
@@ -102,76 +106,64 @@ export class EmployeeService {
         return employee
     }
 
+    async isBusy(visits: Visit[], visitTime: string, serviceDuration=30): Promise<false | string> {
+        const shiftTimeString = this.commonService.incrementTime(visitTime, serviceDuration)
 
-    getTimeFromDate(date: string): string {
-        const d = new Date(date)
-        const year = d.getFullYear();
-        const month = d.getMonth();
-        const day = d.getDate();
-        const hours = d.getHours();
-        const minutes = d.getMinutes();
-        const seconds = d.getSeconds();
-        const utcDate = new Date(year, month, day, hours, minutes, seconds);
-        return `${String(utcDate.getHours()).padStart(2, '0')}:${String(utcDate.getMinutes()).padStart(2, '0')}:${String(utcDate.getSeconds()).padStart(2, '0')}`;
+        for (const visit of visits) {
+            const startTime = this.commonService.getTimeFromDatetime(visit.startDate)
+            const endTime = this.commonService.getTimeFromDatetime(visit.endDate)
+
+            if (visitTime >= startTime && visitTime <= endTime || shiftTimeString >= startTime && shiftTimeString <= endTime) {
+                return endTime // return true if employee busy
+            }
+        }
+        return false
     }
 
-    // increment time or/and convert to string
-    incrementTime(time: string, incrementMinutes: number = 0): string {
-        const [hours, minutes, seconds] = time.split(':')
+    // returns received time if employee free or create new if busy
+    async checkEmployeeTime(employeeVisits: Visit[], time: string): Promise<string> {
+        const minVisitTime = 30
+        const shiftTimeString = this.commonService.incrementTime(time, minVisitTime)
 
-        const incrementedTime = new Date();
-        incrementedTime.setHours(Number(hours));
-        incrementedTime.setMinutes(Number(minutes) + incrementMinutes);
-        incrementedTime.setSeconds(Number(seconds));
-        return `${String(incrementedTime.getHours()).padStart(2, '0')}:${String(incrementedTime.getMinutes()).padStart(2, '0')}:${String(incrementedTime.getSeconds()).padStart(2, '0')}`;
+        // check if employee busy at this time
+        const isEmployeeBusy = await this.isBusy(employeeVisits, time)
+        if (isEmployeeBusy) {
+            return this.commonService.incrementTime(isEmployeeBusy, 15) // return new time if employee busy at this time
+        }
+        return time // return received time if employee free
     }
 
-    async getAvailableServicesForDate(employeeVisits: Visit[], time: string, employeeRankId: number) {
-        const nextVisitTime: string = this.getTimeFromDate(employeeVisits.filter((visit) => {
-            const visitStartString = this.getTimeFromDate(visit.startDate)
+    // returns an array of services which going to end before next visit going to start
+    async getAvailableServicesByTime(employeeVisits: Visit[], time: string, employeeRankId: number): Promise<ServiceWithRankDto[]> {
+        const nextVisitTime: string = this.commonService.getTimeFromDatetime(employeeVisits.filter((visit) => {
+            const visitStartString = this.commonService.getTimeFromDatetime(visit.startDate)
             return time < visitStartString
         })[0]?.startDate)
         const employeeServices = await this.servicesService.findAllByRankId(employeeRankId)
 
         return employeeServices.filter(service => {
-            const serviceEndTime = this.incrementTime(time, service.durationMin)
+            const serviceEndTime = this.commonService.incrementTime(time, service.durationMin)
             return serviceEndTime < nextVisitTime
         })
     }
 
-    // return received time if employee free or create new if busy
-    checkTime(employeeVisits: Visit[], time: string): string {
-        const minVisitTime = 30
-        const shiftTimeString = this.incrementTime(time, minVisitTime)
-
-        // check employee visits
-        for (const visit of employeeVisits) {
-            const visitStartTime = this.getTimeFromDate(visit.startDate)
-            const visitEndTime = this.getTimeFromDate(visit.endDate)
-
-            if (time >= visitStartTime && time <= visitEndTime || shiftTimeString >= visitStartTime && shiftTimeString <= visitEndTime) {
-                return this.incrementTime(visitEndTime, 15) // return new time if employee busy at this time
-            }
-        }
-        return time // return received time if employee free
-    }
-
-    async getFreeVisits(id: number, date: string) {
+    // get visits & available services by free time of employee
+    async getVisits(id: number, date: string): Promise<EmployeeFreeTime[]> {
         const employeeVisits = await this.visitsService.getAllVisitsByDate(id, date)
         const employee = await this.employeeRepository.findOne({
             where: {id},
             relations: ['branch', 'rank']
         })
-        const response = []
+        const response: EmployeeFreeTime[] = []
         let startTime = employee.branch.openAt // get start time
         let endTime = employee.branch.closeAt // get end time
 
         const newDateShift = 40
         while (startTime < endTime) {
-            const start = this.checkTime(employeeVisits, startTime) // return received time or changed
-            const availableServices = await this.getAvailableServicesForDate(employeeVisits, start, employee.rank.id)
+            const start = await this.checkEmployeeTime(employeeVisits, startTime) // return received time or changed
+            const availableServices = await this.getAvailableServicesByTime(employeeVisits, start, employee.rank.id)
             response.push({start, availableServices})
-            startTime = this.incrementTime(start, newDateShift) // set time for next iteration
+            startTime = this.commonService.incrementTime(start, newDateShift) // set time for next iteration
         }
 
         return response

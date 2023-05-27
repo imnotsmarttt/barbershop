@@ -7,29 +7,18 @@ import {EmployeeService} from "../employee/employee.service";
 import {ServicesService} from "../services/services.service";
 import {FindOneQueryDto} from "../config/general.dto";
 import {Service} from "../services/services.entity";
+import {CommonService} from "../common/common.service";
 
 @Injectable()
 export class VisitsService {
     constructor(
         @InjectRepository(Visit)
         private readonly visitRepository: Repository<Visit>,
+        private readonly servicesService: ServicesService,
+        private readonly commonService: CommonService,
         @Inject(forwardRef(() => EmployeeService))
         private readonly employeeService: EmployeeService,
-        private readonly servicesService: ServicesService
     ) {
-    }
-
-    getUtcDate(dateString: string): Date {
-        const date = new Date(dateString)
-
-        const year = date.getFullYear();
-        const month = date.getMonth();
-        const day = date.getDate();
-        const hours = date.getHours();
-        const minutes = date.getMinutes();
-        const seconds = date.getSeconds();
-
-        return new Date(Date.UTC(year, month, day, hours, minutes, seconds));
     }
 
     getVisitEndDate(startDate: string, service: Service) {
@@ -48,14 +37,23 @@ export class VisitsService {
     }
 
     async create(data: CreateOrUpdateVisitDto): Promise<Visit> {
-        const {fullName, phoneNumber, email, startDate, serviceId, employeeId} = data
+        const {fullName, phoneNumber, email, startDatetime, serviceId, employeeId} = data
+
         const employee = await this.employeeService.findOne({id: employeeId})
         const service = await this.servicesService.findOne({id: serviceId})
 
-        const endDate = this.getVisitEndDate(startDate, service)
+        const splitedDate = await this.commonService.getDateAndTimeFromDatetime(startDatetime)
+        const visits = await this.getAllVisitsByDate(employeeId, splitedDate.date)
+
+        const isEmployeeBusy = await this.employeeService.isBusy(visits, splitedDate.time, service.durationMin)
+        if (isEmployeeBusy) {
+            throw new HttpException('Працівник зайнятий у цей час', HttpStatus.CONFLICT)
+        }
+
+        const endDate = this.getVisitEndDate(startDatetime, service)
 
         const visit = await this.visitRepository.create({
-            fullName, phoneNumber, email, startDate, endDate, service, employee
+            fullName, phoneNumber, email, startDate: startDatetime, endDate, service, employee
         })
 
         await this.visitRepository.save(visit)
@@ -64,7 +62,7 @@ export class VisitsService {
 
 
     async update(id: number, data: CreateOrUpdateVisitDto): Promise<Visit> {
-        const {startDate, serviceId, employeeId, ...fields} = data
+        const {startDatetime, serviceId, employeeId, ...fields} = data
         const visit = await this.findOne({id})
 
         const service = await this.servicesService.findOne({id: serviceId})
@@ -79,9 +77,18 @@ export class VisitsService {
         if (visit.employee.id !== employeeId) {
             visit.employee = await this.employeeService.findOne({id: serviceId})
         }
-        if (visit.startDate !== new Date(startDate).toISOString()) {
-            visit.startDate = startDate
-            visit.endDate = this.getVisitEndDate(startDate, service)
+        if (new Date(visit.startDate).toISOString() !== new Date(startDatetime).toISOString()) {
+            const splitedDate = await this.commonService.getDateAndTimeFromDatetime(startDatetime)
+
+            const visits = await this.getAllVisitsByDate(employeeId, splitedDate.date)
+
+            const isEmployeeBusy = await this.employeeService.isBusy(visits, splitedDate.time, service.durationMin)
+            if (isEmployeeBusy) {
+                throw new HttpException('Працівник зайнятий у цей час', HttpStatus.CONFLICT)
+            }
+
+            visit.startDate = startDatetime
+            visit.endDate = this.getVisitEndDate(startDatetime, service)
         }
 
         await this.visitRepository.save(visit)

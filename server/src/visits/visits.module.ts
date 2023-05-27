@@ -10,11 +10,13 @@ import {RankModule} from "../rank/rank.module";
 import {UsersModule} from "../users/users.module";
 import {BranchModule} from "../branch/branch.module";
 import {ServicesService} from "../services/services.service";
+import {CommonModule} from "../common/common.module";
 
 @Module({
     imports: [
         forwardRef(() => EmployeeModule),
         ServicesModule,
+        CommonModule,
         TypeOrmModule.forFeature([Visit])
     ],
     exports: [VisitsService, TypeOrmModule],
