@@ -17,11 +17,11 @@ export class Visit {
     @Column({nullable: true})
     email: string
 
-    @CreateDateColumn({nullable: false})
-    startDate: Date
+    @Column({nullable: false, type: 'timestamp'})
+    startDate: string
 
-    @CreateDateColumn({nullable: false})
-    endDate: Date
+    @Column({nullable: false, type: 'timestamp'})
+    endDate: string
 
     @Column({nullable: false, default: VisitStatusEnumDto.notStarted})
     status: VisitStatusEnumDto

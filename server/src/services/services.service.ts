@@ -74,4 +74,11 @@ export class ServicesService {
         }
         return service
     }
+
+    async findAllByRankId(rankId: number): Promise<Service[]> {
+        return await this.serviceRepository.createQueryBuilder('service')
+            .leftJoinAndSelect('service.rank', 'rank')
+            .where('rank.id = :rankId', {rankId})
+            .getMany()
+    }
 }

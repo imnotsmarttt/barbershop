@@ -11,7 +11,7 @@ import {
     UseInterceptors
 } from '@nestjs/common';
 import {EmployeeService} from "./employee.service";
-import {CreateOrUpdateEmployeeDto} from "./employee.dto";
+import {CreateOrUpdateEmployeeDto, FreeVisitsParamDto} from "./employee.dto";
 import {MulterPhotoInterceptor} from "../config/multer.config";
 
 
@@ -45,5 +45,10 @@ export class EmployeeController {
     @Get(':id')
     async getOne(@Param('id') id: number) {
         return await this.employeeService.findOne({id})
+    }
+
+    @Get(':id/visits/:date')
+    async freeVisits(@Param() params: FreeVisitsParamDto ) {
+        return await this.employeeService.getFreeVisits(params.id, params.date)
     }
 }

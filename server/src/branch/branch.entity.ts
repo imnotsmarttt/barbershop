@@ -16,10 +16,10 @@ export class Branch {
     address: string
 
     @Column({type: "time", nullable: false})
-    openAt: Date
+    openAt: string
 
     @Column({type: "time", nullable: false})
-    closeAt: Date
+    closeAt: string
 
     // employees
     @OneToMany(() => Employee, (employee) => employee.branch, {onDelete: "SET NULL"})

@@ -1,4 +1,4 @@
-import {HttpException, HttpStatus, Injectable} from '@nestjs/common';
+import {forwardRef, HttpException, HttpStatus, Inject, Injectable} from '@nestjs/common';
 import {InjectRepository} from "@nestjs/typeorm";
 import {Visit} from "./visit.entity";
 import {Repository} from "typeorm";
@@ -13,17 +13,38 @@ export class VisitsService {
     constructor(
         @InjectRepository(Visit)
         private readonly visitRepository: Repository<Visit>,
-
+        @Inject(forwardRef(() => EmployeeService))
         private readonly employeeService: EmployeeService,
         private readonly servicesService: ServicesService
-    ) {}
+    ) {
+    }
 
-    getVisitEndDate(startDate: Date, service: Service) {
+    getUtcDate(dateString: string): Date {
+        const date = new Date(dateString)
+
+        const year = date.getFullYear();
+        const month = date.getMonth();
+        const day = date.getDate();
+        const hours = date.getHours();
+        const minutes = date.getMinutes();
+        const seconds = date.getSeconds();
+
+        return new Date(Date.UTC(year, month, day, hours, minutes, seconds));
+    }
+
+    getVisitEndDate(startDate: string, service: Service) {
         const start = new Date(startDate)
         start.setMinutes(start.getMinutes() + service.durationMin)
-        const endDate = start.toISOString()
+        return start.toISOString()
+    }
 
-        return endDate
+    async getAllVisitsByDate(employeeId: number, date: string): Promise<Visit[]> {
+        const visits = await this.visitRepository.createQueryBuilder('visit')
+            .leftJoinAndSelect('visit.employee', 'employee')
+            .where(`DATE_TRUNC('day', visit.startDate) = :date`, {date})
+            .andWhere('employee.id = :employeeId', {employeeId})
+
+        return visits.getMany()
     }
 
     async create(data: CreateOrUpdateVisitDto): Promise<Visit> {
@@ -42,7 +63,6 @@ export class VisitsService {
     }
 
 
-
     async update(id: number, data: CreateOrUpdateVisitDto): Promise<Visit> {
         const {startDate, serviceId, employeeId, ...fields} = data
         const visit = await this.findOne({id})
@@ -59,9 +79,9 @@ export class VisitsService {
         if (visit.employee.id !== employeeId) {
             visit.employee = await this.employeeService.findOne({id: serviceId})
         }
-        if (visit.startDate.toISOString() !== new Date(startDate).toISOString()) {
+        if (visit.startDate !== new Date(startDate).toISOString()) {
             visit.startDate = startDate
-            visit.endDate = new Date(this.getVisitEndDate(startDate, service))
+            visit.endDate = this.getVisitEndDate(startDate, service)
         }
 
         await this.visitRepository.save(visit)
@@ -73,7 +93,7 @@ export class VisitsService {
             .delete()
             .where('id = :id', {id})
             .execute()
-        if (deleteResult.affected === 0 ) {
+        if (deleteResult.affected === 0) {
             throw new HttpException('Запис не знайдено', HttpStatus.NOT_FOUND) // visit not found
         }
     }

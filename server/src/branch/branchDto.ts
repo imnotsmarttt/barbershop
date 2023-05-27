@@ -11,10 +11,10 @@ export class CreateOrUpdateBranchDto {
     address: string
 
     @IsMilitaryTime()
-    openAt: Date
+    openAt: string
 
     @IsMilitaryTime()
-    closeAt: Date
+    closeAt: string
 }
 
 export interface BranchDto {
@@ -22,6 +22,6 @@ export interface BranchDto {
     name: string
     city: string
     address: string
-    openAt: Date
-    closeAt: Date
+    openAt: string
+    closeAt: string
 }

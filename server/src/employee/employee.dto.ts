@@ -1,4 +1,4 @@
-import {IsDateString, IsEmail, IsNotEmpty, IsOptional, IsString} from "class-validator";
+import {IsDateString, IsEmail, IsNotEmpty, IsNumberString, IsOptional, IsString} from "class-validator";
 import {BranchDto} from "../branch/branchDto";
 import {RankDto} from "../rank/rank.dto";
 
@@ -36,6 +36,14 @@ export class CreateOrUpdateEmployeeDto {
 
     @IsOptional()
     userId?: number
+}
+
+export class FreeVisitsParamDto {
+    @IsNumberString()
+    id: number
+
+    @IsDateString()
+    date: string
 }
 
 export interface EmployeeDto {

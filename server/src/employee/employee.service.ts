@@ -1,4 +1,4 @@
-import {HttpException, HttpStatus, Injectable} from '@nestjs/common';
+import {forwardRef, HttpException, HttpStatus, Inject, Injectable} from '@nestjs/common';
 import {Repository} from "typeorm";
 import {Employee} from "./employee.entity";
 import {InjectRepository} from "@nestjs/typeorm";
@@ -8,6 +8,9 @@ import {RankService} from "../rank/rank.service";
 import {UsersService} from "../users/users.service";
 import {FindOneQueryDto} from "../config/general.dto";
 import {unlink} from "fs/promises";
+import {VisitsService} from "../visits/visits.service";
+import {Visit} from "../visits/visit.entity";
+import {ServicesService} from "../services/services.service";
 
 @Injectable()
 export class EmployeeService {
@@ -16,7 +19,10 @@ export class EmployeeService {
         private readonly employeeRepository: Repository<Employee>,
         private readonly branchService: BranchService,
         private readonly rankService: RankService,
-        private readonly usersService: UsersService
+        private readonly usersService: UsersService,
+        private readonly servicesService: ServicesService,
+        @Inject(forwardRef(() => VisitsService))
+        private readonly visitsService: VisitsService
     ) {
     }
 
@@ -94,5 +100,80 @@ export class EmployeeService {
 
         await this.employeeRepository.save(employee)
         return employee
+    }
+
+
+    getTimeFromDate(date: string): string {
+        const d = new Date(date)
+        const year = d.getFullYear();
+        const month = d.getMonth();
+        const day = d.getDate();
+        const hours = d.getHours();
+        const minutes = d.getMinutes();
+        const seconds = d.getSeconds();
+        const utcDate = new Date(year, month, day, hours, minutes, seconds);
+        return `${String(utcDate.getHours()).padStart(2, '0')}:${String(utcDate.getMinutes()).padStart(2, '0')}:${String(utcDate.getSeconds()).padStart(2, '0')}`;
+    }
+
+    // increment time or/and convert to string
+    incrementTime(time: string, incrementMinutes: number = 0): string {
+        const [hours, minutes, seconds] = time.split(':')
+
+        const incrementedTime = new Date();
+        incrementedTime.setHours(Number(hours));
+        incrementedTime.setMinutes(Number(minutes) + incrementMinutes);
+        incrementedTime.setSeconds(Number(seconds));
+        return `${String(incrementedTime.getHours()).padStart(2, '0')}:${String(incrementedTime.getMinutes()).padStart(2, '0')}:${String(incrementedTime.getSeconds()).padStart(2, '0')}`;
+    }
+
+    async getAvailableServicesForDate(employeeVisits: Visit[], time: string, employeeRankId: number) {
+        const nextVisitTime: string = this.getTimeFromDate(employeeVisits.filter((visit) => {
+            const visitStartString = this.getTimeFromDate(visit.startDate)
+            return time < visitStartString
+        })[0]?.startDate)
+        const employeeServices = await this.servicesService.findAllByRankId(employeeRankId)
+
+        return employeeServices.filter(service => {
+            const serviceEndTime = this.incrementTime(time, service.durationMin)
+            return serviceEndTime < nextVisitTime
+        })
+    }
+
+    // return received time if employee free or create new if busy
+    checkTime(employeeVisits: Visit[], time: string): string {
+        const minVisitTime = 30
+        const shiftTimeString = this.incrementTime(time, minVisitTime)
+
+        // check employee visits
+        for (const visit of employeeVisits) {
+            const visitStartTime = this.getTimeFromDate(visit.startDate)
+            const visitEndTime = this.getTimeFromDate(visit.endDate)
+
+            if (time >= visitStartTime && time <= visitEndTime || shiftTimeString >= visitStartTime && shiftTimeString <= visitEndTime) {
+                return this.incrementTime(visitEndTime, 15) // return new time if employee busy at this time
+            }
+        }
+        return time // return received time if employee free
+    }
+
+    async getFreeVisits(id: number, date: string) {
+        const employeeVisits = await this.visitsService.getAllVisitsByDate(id, date)
+        const employee = await this.employeeRepository.findOne({
+            where: {id},
+            relations: ['branch', 'rank']
+        })
+        const response = []
+        let startTime = employee.branch.openAt // get start time
+        let endTime = employee.branch.closeAt // get end time
+
+        const newDateShift = 40
+        while (startTime < endTime) {
+            const start = this.checkTime(employeeVisits, startTime) // return received time or changed
+            const availableServices = await this.getAvailableServicesForDate(employeeVisits, start, employee.rank.id)
+            response.push({start, availableServices})
+            startTime = this.incrementTime(start, newDateShift) // set time for next iteration
+        }
+
+        return response
     }
 }

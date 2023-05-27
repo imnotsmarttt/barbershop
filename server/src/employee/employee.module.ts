@@ -1,17 +1,25 @@
-import {Module} from '@nestjs/common';
+import {forwardRef, Module} from '@nestjs/common';
+
+import {Employee} from "./employee.entity";
+
 import {EmployeeController} from './employee.controller';
 import {EmployeeService} from './employee.service';
+
 import {TypeOrmModule} from "@nestjs/typeorm";
-import {Employee} from "./employee.entity";
 import {RankModule} from "../rank/rank.module";
 import {UsersModule} from "../users/users.module";
 import {BranchModule} from "../branch/branch.module";
+import {VisitsModule} from "../visits/visits.module";
+import {ServicesModule} from "../services/services.module";
+
 
 @Module({
     imports: [
         RankModule,
         UsersModule,
         BranchModule,
+        forwardRef(() => VisitsModule),
+        ServicesModule,
         TypeOrmModule.forFeature([Employee])
     ],
     controllers: [EmployeeController],
