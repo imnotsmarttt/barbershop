@@ -1,4 +1,4 @@
-import {Body, Controller, Param, Post, Put} from '@nestjs/common';
+import {Body, Controller, Get, Param, Post, Put} from '@nestjs/common';
 import {VisitsService} from "./visits.service";
 import {CreateOrUpdateVisitDto} from "./visit.dto";
 
@@ -6,13 +6,8 @@ import {CreateOrUpdateVisitDto} from "./visit.dto";
 export class VisitsController {
     constructor(private readonly visitsService: VisitsService) {}
 
-    @Post()
-    async create(@Body() body: CreateOrUpdateVisitDto) {
-        return await this.visitsService.create(body)
-    }
-
-    @Put(':id')
-    async update(@Param('id') id: number, @Body() body: CreateOrUpdateVisitDto) {
-        return await this.visitsService.update(id, body)
+    @Get(':id')
+    async findOne(@Param('id') id: number) {
+        return await this.visitsService.findOne({id})
     }
 }

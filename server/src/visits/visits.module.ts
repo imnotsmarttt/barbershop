@@ -11,6 +11,7 @@ import {UsersModule} from "../users/users.module";
 import {BranchModule} from "../branch/branch.module";
 import {ServicesService} from "../services/services.service";
 import {CommonModule} from "../common/common.module";
+import {VisitsAdminController} from "./visits.admin.controller";
 
 @Module({
     imports: [
@@ -20,7 +21,7 @@ import {CommonModule} from "../common/common.module";
         TypeOrmModule.forFeature([Visit])
     ],
     exports: [VisitsService, TypeOrmModule],
-    controllers: [VisitsController],
+    controllers: [VisitsController, VisitsAdminController],
     providers: [VisitsService]
 })
 export class VisitsModule {

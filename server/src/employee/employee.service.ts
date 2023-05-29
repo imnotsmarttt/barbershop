@@ -106,6 +106,7 @@ export class EmployeeService {
         return employee
     }
 
+    // check if employee has visit
     async isBusy(visits: Visit[], visitTime: string, serviceDuration=30): Promise<false | string> {
         const shiftTimeString = this.commonService.incrementTime(visitTime, serviceDuration)
 
@@ -113,11 +114,12 @@ export class EmployeeService {
             const startTime = this.commonService.getTimeFromDatetime(visit.startDate)
             const endTime = this.commonService.getTimeFromDatetime(visit.endDate)
 
+
             if (visitTime >= startTime && visitTime <= endTime || shiftTimeString >= startTime && shiftTimeString <= endTime) {
-                return endTime // return true if employee busy
+                return endTime // return next free time if employee busy
             }
         }
-        return false
+        return false // return false if employee free
     }
 
     // returns received time if employee free or create new if busy
@@ -160,7 +162,7 @@ export class EmployeeService {
 
         const newDateShift = 40
         while (startTime < endTime) {
-            const start = await this.checkEmployeeTime(employeeVisits, startTime) // return received time or changed
+            const start = await this.checkEmployeeTime(employeeVisits, startTime) // return received or changed time
             const availableServices = await this.getAvailableServicesByTime(employeeVisits, start, employee.rank.id)
             response.push({start, availableServices})
             startTime = this.commonService.incrementTime(start, newDateShift) // set time for next iteration

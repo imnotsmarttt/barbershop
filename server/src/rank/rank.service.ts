@@ -44,7 +44,7 @@ export class RankService {
             .where('id = :id', {id})
             .execute()
         if (deleteResult.affected === 0) {
-            throw new HttpException('Not found', HttpStatus.NOT_FOUND)
+            throw new HttpException('Rank not found', HttpStatus.NOT_FOUND)
         }
     }
 

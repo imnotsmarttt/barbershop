@@ -7,6 +7,9 @@ import {EmployeeModule} from './employee/employee.module';
 import {BranchModule} from './branch/branch.module';
 import {ServicesModule} from './services/services.module';
 import {VisitsModule} from './visits/visits.module';
+import {RankModule} from './rank/rank.module';
+import {CommonModule} from './common/common.module';
+
 
 import {User} from "./users/users.entity";
 import {Visit} from "./visits/visit.entity";
@@ -16,9 +19,6 @@ import {Branch} from "./branch/branch.entity";
 import {Rank} from "./rank/rank.entity";
 
 import {DB_HOST, DB_NAME, DB_PASSWORD, DB_PORT, DB_USERNAME} from "./config/config";
-import {AdminModule} from './admin/admin.module';
-import {RankModule} from './rank/rank.module';
-import { CommonModule } from './common/common.module';
 
 
 @Module({
@@ -47,7 +47,6 @@ import { CommonModule } from './common/common.module';
         BranchModule,
         ServicesModule,
         VisitsModule,
-        AdminModule,
         RankModule,
         CommonModule
     ],
