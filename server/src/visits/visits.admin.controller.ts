@@ -11,11 +11,6 @@ import {RoleEnum} from "../role/roles.enum";
 export class VisitsAdminController {
     constructor(private readonly visitsService: VisitsService) {}
 
-    @Roles(RoleEnum.admin)
-    @Post()
-    async create(@Body() body: CreateOrUpdateVisitDto) {
-        return await this.visitsService.create(body)
-    }
 
     @Roles(RoleEnum.admin)
     @Put(':id')
