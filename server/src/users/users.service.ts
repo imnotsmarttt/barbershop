@@ -12,9 +12,14 @@ export class UsersService {
     constructor(
         @InjectRepository(User)
         private usersRepository: Repository<User>
-    ) {}
+    ) {
+    }
 
     async findOne(query: FindOneQueryDto): Promise<User> {
+        return await this.usersRepository.findOneBy(query)
+    }
+
+    async findOneWithError(query: FindOneQueryDto): Promise<User> {
         const user = await this.usersRepository.findOneBy(query)
         if (!user) {
             throw new HttpException('Користувача не знайдено', HttpStatus.NOT_FOUND) // user not found

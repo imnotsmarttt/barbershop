@@ -9,6 +9,6 @@ export class UsersController {
 
     @Get(':id')
     async findOne(@Param('id') id: number) {
-        return await this.usersService.findOne({id})
+        return await this.usersService.findOneWithError({id})
     }
 }

@@ -16,7 +16,7 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
     async validate(username: string, password: string): Promise<CleanUserDto> {
         const user = await this.authService.validateUser({username, password})
         if (!user) {
-            throw new HttpException('Користувача не знайдено', HttpStatus.UNAUTHORIZED) // user not found
+            throw new HttpException('Неправильно введені дані', HttpStatus.UNAUTHORIZED) // user not found or password mismatch
         }
         return user
     }

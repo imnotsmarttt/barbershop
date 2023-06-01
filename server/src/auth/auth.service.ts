@@ -25,7 +25,6 @@ export class AuthService {
             if (comparePassword) {
                 const {password, createdAt, ...cleanUser} = user
                 return cleanUser
-
             }
         }
         return null

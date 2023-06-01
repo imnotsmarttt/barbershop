@@ -1,0 +1,20 @@
+/*LOGIN*/
+.wrapper {
+    flex-wrap: wrap;
+    justify-content: center;
+    align-content: center;
+    height: 100vh;
+}
+
+.form {
+    width: 100%;
+    max-width: 500px;
+}
+.form .form__item {
+    margin-bottom: 20px;
+    width: 100%;
+}
+
+.form__item .form__input {
+    width: 100%;
+}

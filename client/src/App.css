@@ -1,4 +1,27 @@
+/*GENERAL*/
 .App {
-
+    text-align: start;
+    min-height: 100vh;
 }
 
+.container {
+    max-width: 1440px;
+    margin: 0 auto;
+
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.text {
+    font-style: normal;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 18px;
+
+    color: #808080;
+}
+
+.error_text {
+    color: #d32f2f;
+    font-size: 12px;
+}

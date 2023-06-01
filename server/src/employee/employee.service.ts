@@ -39,7 +39,7 @@ export class EmployeeService {
         } = data
         const empBranch = await this.branchService.findOne({id: branchId})
         const empRank = await this.rankService.findOne({id: rankId})
-        const empUser = await this.usersService.findOne({id: userId})
+        const empUser = await this.usersService.findOneWithError({id: userId})
 
         const createdEmployee = await this.employeeRepository.create({
             firstName, lastName,
