@@ -1,0 +1,40 @@
+.main_wrapper {
+    padding: 40px 32px;
+    align-content: start;
+}
+
+/*HEADER*/
+.header__wrapper {
+    margin-bottom: 50px!important;
+}
+
+.header__user .photo__container {
+    background: black;
+
+    width: 40px;
+    height: 40px;
+    border-radius: 20px;
+}
+
+.header__user .info__container {
+    height: fit-content;
+    align-self: center;
+    margin-left: 20px;
+}
+
+.info__container .full_name {
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 16px;
+
+    color: #4C4C4C;
+    margin-bottom: 4px;
+}
+
+.info__container .role {
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 16px;
+
+    color: #B3B3B3;
+}

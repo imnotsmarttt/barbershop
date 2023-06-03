@@ -6,6 +6,7 @@
     height: 100vh;
 }
 
+/*FORM*/
 .form {
     width: 100%;
     max-width: 500px;
@@ -14,7 +15,6 @@
     margin-bottom: 20px;
     width: 100%;
 }
-
 .form__item .form__input {
     width: 100%;
 }

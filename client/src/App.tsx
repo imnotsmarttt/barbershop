@@ -5,6 +5,7 @@ import {Routes, Route, BrowserRouter} from 'react-router-dom'
 import Login from "./Pages/Auth/Login";
 import Register from "./Pages/Auth/Register";
 import Auth from "./Pages/Auth/Auth";
+import Admin from "./Pages/Admin/Admin";
 
 function App() {
     return (
@@ -15,7 +16,7 @@ function App() {
                         <Route path='login' element={<Login/>}/>
                         <Route path='register' element={<Register />}/>
                     </Route>
-                    <Route path='admin'>
+                    <Route path='admin*' element={<Admin />}>
 
                     </Route>
 
