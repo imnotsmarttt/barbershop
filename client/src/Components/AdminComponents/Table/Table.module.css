@@ -55,18 +55,15 @@
     margin-bottom: 20px!important;
 }
 .table__header {
-
-}
-.table__footer {
     background: #F2F2F2;
-    /*width: 100%;*/
 }
 .table__row {
 
 }
 
 .table__cell {
-
+    padding: 12px 24px!important;
+    border-bottom: none!important;
 }
 
 /*TABLE_PAGINATION*/

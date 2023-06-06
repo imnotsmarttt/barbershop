@@ -1,4 +1,5 @@
 import {IsDateString, IsEmail, IsNotEmpty, IsOptional, IsString} from "class-validator";
+import {Visit} from "./visit.entity";
 
 
 export class CreateOrUpdateVisitDto {
@@ -29,4 +30,10 @@ export enum VisitStatusEnumDto {
     end = 'END',
     canceled = 'CANCELED',
     notStarted = 'NOT_STARTED'
+}
+
+export interface GetAllVisitsResultDto {
+    visitList: Visit[];
+    visitCount: number;
+    pageSize: number
 }

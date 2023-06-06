@@ -28,7 +28,6 @@ export class CommonService {
             date: this.getDateFromDatetime(date),
             time: this.getTimeFromDatetime(date)
         }
-
     }
 
     // increment time or/and convert to string

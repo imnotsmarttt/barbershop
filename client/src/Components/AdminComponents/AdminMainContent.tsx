@@ -4,12 +4,19 @@ import s from './Admin.module.css'
 import StatisticSection from "./Statistic/StatisticSection";
 import AdminHeader from "./AdminHeader/AdminHeader";
 
-function AdminMainContent() {
+type PropsType = {
+    headerTitles: string[]
+    rows: object[],
+    rowsCount: number;
+    pageSize: number
+}
+
+function AdminMainContent(props: PropsType) {
     return (
         <Grid container item xs={10} className={s.main_wrapper}>
             <AdminHeader />
             <StatisticSection />
-            <TableSection/>
+            <TableSection rows={props.rows} headerTitles={props.headerTitles} rowsCount={props.rowsCount} pageSize={props.pageSize}/>
         </Grid>
     )
 }

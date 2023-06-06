@@ -1,9 +1,13 @@
 import s from './AdminNav.module.css'
 import {Grid} from "@mui/material";
 import AdminNavItem from "./AdminNavItem";
+import {useAppDispatch} from "../../../hook";
+import {logout} from '../../../store/slices/auth'
 
 
 function AdminNav() {
+    const dispatch = useAppDispatch()
+
     return (
         <Grid item xs={2} className={s.wrapper}>
             <Grid container className={s.nav_items__wrapper}>
@@ -15,7 +19,7 @@ function AdminNav() {
                     <AdminNavItem link='branch' title='Філіал' />
 
                     <li className={s.item}>
-                        <button className={s.btn__logout}>Вийти</button>
+                        <button className={s.btn__logout} onClick={() => dispatch(logout())}>Вийти</button>
                     </li>
                 </ul>
             </Grid>

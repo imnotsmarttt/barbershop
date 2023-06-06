@@ -1,13 +1,12 @@
 import AdminNav from "../../Components/AdminComponents/Nav/AdminNav";
 import {Grid} from "@mui/material";
-import AdminMainContent from "../../Components/AdminComponents/AdminMainContent";
+import {Outlet} from "react-router-dom";
 
 function Admin() {
     return (
         <Grid container className='container'>
             <AdminNav />
-
-            <AdminMainContent />
+            <Outlet />
         </Grid>
         )
 

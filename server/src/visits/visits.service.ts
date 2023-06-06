@@ -2,7 +2,7 @@ import {forwardRef, HttpException, HttpStatus, Inject, Injectable} from '@nestjs
 import {InjectRepository} from "@nestjs/typeorm";
 import {Visit} from "./visit.entity";
 import {Repository} from "typeorm";
-import {CreateOrUpdateVisitDto} from "./visit.dto";
+import {CreateOrUpdateVisitDto, GetAllVisitsResultDto} from "./visit.dto";
 import {EmployeeService} from "../employee/employee.service";
 import {ServicesService} from "../services/services.service";
 import {FindOneQueryDto} from "../config/general.dto";
@@ -25,6 +25,28 @@ export class VisitsService {
         const start = new Date(startDate)
         start.setMinutes(start.getMinutes() + service.durationMin)
         return start.toISOString()
+    }
+
+    async getAll(query): Promise<GetAllVisitsResultDto> {
+        const page: number = query.page || 1
+        const take: number = query.take || 2
+        const skip: number = (page - 1) * take
+
+
+        const queryResult = await this.visitRepository.createQueryBuilder('visit')
+            .leftJoinAndSelect('visit.employee', 'employee')
+            .leftJoinAndSelect('visit.service', 'service')
+            .orderBy('visit.startDate', 'DESC')
+            .take(take)
+            .skip(skip)
+            .getManyAndCount()
+
+        const [visitList, visitCount] = queryResult
+        return {
+            visitList,
+            visitCount,
+            pageSize: take
+        }
     }
 
     async getAllVisitsByDate(employeeId: number, date: string): Promise<Visit[]> {
@@ -59,7 +81,6 @@ export class VisitsService {
         await this.visitRepository.save(visit)
         return visit
     }
-
 
     async update(id: number, data: CreateOrUpdateVisitDto): Promise<Visit> {
         const {startDatetime, serviceId, employeeId, ...fields} = data
