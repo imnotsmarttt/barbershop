@@ -1,11 +1,8 @@
-.wrapper {
+.table {
     height: fit-content;
 }
-
-/*TOP SECTION*/
-
-/*SEARCH SECTION*/
-.right_item {
+/*TABLE HEADER*/
+.table_header__right_item {
     justify-content: space-between;
 }
 
@@ -28,7 +25,7 @@
     outline: 1px solid #66b2ff;
 }
 
-.filter_btn {
+.button_filters {
     width: 20%;
 
     border: 1px solid #E6E6E6;
@@ -43,30 +40,31 @@
     color: #4C4C4C;
 }
 
-.filter_btn:hover {
+.button_filters:hover {
     background: #FAFAFA;
 }
 
-/*TABLE*/
-.table__wrapper {
+/*TABLE BODY*/
+.table_body {
     margin-top: 30px;
 }
-.table__container {
+
+.body_container {
     margin-bottom: 20px!important;
 }
-.table__header {
+.body_header {
     background: #F2F2F2;
 }
-.table__row {
+.row {
 
 }
 
-.table__cell {
+.cell {
     padding: 12px 24px!important;
     border-bottom: none!important;
 }
 
 /*TABLE_PAGINATION*/
-.pagination__wrapper {
+.table_pagination__wrapper {
     margin: 0 auto;
 }

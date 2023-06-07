@@ -1,7 +1,7 @@
-import TableSection from "./Table/TableSection";
+import AdminTable from "./AdminTable/AdminTable";
 import {Grid} from "@mui/material";
 import s from './Admin.module.css'
-import StatisticSection from "./Statistic/StatisticSection";
+import AdminStatistic from "./AdminStatistic/AdminStatistic";
 import AdminHeader from "./AdminHeader/AdminHeader";
 
 type PropsType = {
@@ -13,10 +13,15 @@ type PropsType = {
 
 function AdminMainContent(props: PropsType) {
     return (
-        <Grid container item xs={10} className={s.main_wrapper}>
-            <AdminHeader />
-            <StatisticSection />
-            <TableSection rows={props.rows} headerTitles={props.headerTitles} rowsCount={props.rowsCount} pageSize={props.pageSize}/>
+        <Grid container item xs={10} className={s.main}>
+            <AdminHeader/>
+            <AdminStatistic/>
+            <AdminTable
+                rows={props.rows}
+                headerTitles={props.headerTitles}
+                rowsCount={props.rowsCount}
+                pageSize={props.pageSize}
+            />
         </Grid>
     )
 }

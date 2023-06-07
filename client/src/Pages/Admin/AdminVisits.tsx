@@ -7,17 +7,20 @@ import {fetchVisitList} from "../../store/slices/admin";
 import {dateFormatting} from "../../services/admin";
 import {useSearchParams} from "react-router-dom";
 
-function VisitsContent() {
+function AdminVisits() {
+    const [searchParams] = useSearchParams()
     const dispatch = useAppDispatch()
-    const {visitList, pageSize, visitCount} = useSelector((state: RootStateType) => state.admin.visits)
+    useEffect(() => {
+        dispatch(fetchVisitList({query: searchParams.toString()}))
+    }, [searchParams, dispatch])
 
-    const [searchParams, setSearchParams] = useSearchParams()
+    const {visitList, pageSize, visitCount} = useSelector((state: RootStateType) => state.admin.visits)
 
     // titles for table header
     const headerTitles =  ['ID', 'ПІБ', 'Телефон', 'Початок', 'Працівник', 'Послуга', 'Ціна', 'Статус']
 
     // generate rows for table
-    const rows = visitList?.map(visit => {
+    const rows = visitList.map(visit => {
         const {id, fullName, phoneNumber, startDate, status} = visit
         const start = dateFormatting(startDate)
         return {
@@ -30,13 +33,9 @@ function VisitsContent() {
         }
     })
 
-    useEffect(() => {
-        dispatch(fetchVisitList({query: searchParams.toString()}))
-    }, [searchParams])
-
     return (
         <AdminMainContent headerTitles={headerTitles} rows={rows} rowsCount={visitCount} pageSize={pageSize} />
     )
 }
 
-export default VisitsContent
+export default AdminVisits

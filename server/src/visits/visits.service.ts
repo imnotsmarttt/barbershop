@@ -29,7 +29,7 @@ export class VisitsService {
 
     async getAll(query): Promise<GetAllVisitsResultDto> {
         const page: number = query.page || 1
-        const take: number = query.take || 2
+        const take: number = query.take || 10
         const skip: number = (page - 1) * take
 
 

@@ -1,13 +1,13 @@
-.wrapper {
+.statistic {
     justify-content: space-between;
     margin-bottom: 50px!important;
 }
-.statistic__item {
+.item {
     background: #DEEDE5;
     border-radius: 4px;
     padding: 10px;
 }
-.statistic__item .value {
+.item__value {
     font-style: normal;
     font-weight: 600;
     font-size: 24px;
@@ -15,7 +15,7 @@
 
     color: #FFFFFF;
 }
-.statistic__item .name {
+.item__name {
     font-style: normal;
     font-weight: 400;
     font-size: 12px;

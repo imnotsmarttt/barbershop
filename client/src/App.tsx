@@ -6,7 +6,7 @@ import Login from "./Pages/Auth/Login";
 import Register from "./Pages/Auth/Register";
 import Auth from "./Pages/Auth/Auth";
 import Admin from "./Pages/Admin/Admin";
-import VisitsContent from "./Pages/Admin/VisitsContent";
+import AdminVisits from "./Pages/Admin/AdminVisits";
 
 function App() {
     return (
@@ -18,7 +18,7 @@ function App() {
                         <Route path='register' element={<Register />}/>
                     </Route>
                     <Route path='admin' element={<Admin />}>
-                        <Route path='visits' element={<VisitsContent />} />
+                        <Route path='visits' element={<AdminVisits />} />
                     </Route>
 
 
