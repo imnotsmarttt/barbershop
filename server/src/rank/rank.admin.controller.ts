@@ -2,11 +2,11 @@ import {Body, Controller, Delete, Param, Post, Put, UseGuards} from '@nestjs/com
 import {RankService} from "./rank.service";
 import {CreateOrUpdateRankDto} from "./rank.dto";
 import {RolesGuard} from "../role/roles.guard";
-import {JwtGuard} from "../auth/guards/jwt.guard";
+import {JwtAccessGuard} from "../auth/guards/jwt-access.guard";
 import {Roles} from "../role/role.decorator";
 import {RoleEnum} from "../role/roles.enum";
 
-@UseGuards(RolesGuard, JwtGuard)
+@UseGuards(RolesGuard, JwtAccessGuard)
 @Controller('admin/rank')
 export class RankAdminController {
     constructor(

@@ -2,12 +2,12 @@ import {Body, Controller, Delete, HttpStatus, Param, Post, Put, UploadedFile, Us
 import {ServicesService} from "./services.service";
 import {CreateOrUpdateServicesDto} from "./services.dto";
 import {MulterPhotoInterceptor} from "../config/multer.config";
-import {JwtGuard} from "../auth/guards/jwt.guard";
+import {JwtAccessGuard} from "../auth/guards/jwt-access.guard";
 import {RolesGuard} from "../role/roles.guard";
 import {Roles} from "../role/role.decorator";
 import {RoleEnum} from "../role/roles.enum";
 
-@UseGuards(RolesGuard, JwtGuard)
+@UseGuards(RolesGuard, JwtAccessGuard)
 @Controller('services')
 export class ServicesAdminController {
     constructor(

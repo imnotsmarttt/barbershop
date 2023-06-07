@@ -1,8 +1,9 @@
 import {HttpException, HttpStatus, Injectable} from '@nestjs/common';
 
-import {LoginDto, RegisterDto, AuthFinishedDto, JwtUserDto} from "./auth.dto";
+import {LoginDto, RegisterDto, AuthFinishedDto, JwtUserDto, TokensDto} from "./auth.dto";
 import * as bcrypt from 'bcrypt'
-import {BCRYPT_SALT} from "../config/config";
+import {BCRYPT_SALT, JWT_ACCESS_SECRET_KEY, JWT_REFRESH_SECRET_KEY} from "../config/config";
+
 
 import {UsersService} from "../users/users.service";
 import {JwtService} from "@nestjs/jwt";
@@ -30,10 +31,33 @@ export class AuthService {
         return null
     }
 
-    async generateToken(payload: object) {
-        return this.jwtService.sign(payload)
+    async generateTokens(payload: object): Promise<TokensDto> {
+        const [accessToken, refreshToken] = await Promise.all([
+            this.jwtService.signAsync(payload, {
+                secret: JWT_ACCESS_SECRET_KEY,
+                expiresIn: '15m'
+            }),
+            this.jwtService.signAsync(payload, {
+                secret: JWT_REFRESH_SECRET_KEY,
+                expiresIn: '7d'
+            })
+        ])
+        return {
+            accessToken,
+            refreshToken
+        }
     }
 
+    async updateRefreshToken(userId: number, refreshToken: string) {
+        const hashedToken = await this.hashData(refreshToken)
+        await this.usersService.update(userId, {refreshToken: hashedToken})
+    }
+
+    async hashData(data: string): Promise<string> {
+        return await bcrypt.hash(data, BCRYPT_SALT)
+    }
+
+    // controller services
     async register(data: RegisterDto): Promise<AuthFinishedDto> {
         const {username, password, password2} = data
         const userExist = await this.usersService.findOne({username})
@@ -43,29 +67,46 @@ export class AuthService {
         if (password !== password2) {
             throw new HttpException(`Паролі не співпадають`, HttpStatus.UNAUTHORIZED) // password mismatch
         }
-        const hashedPassword = await bcrypt.hash(password, BCRYPT_SALT)
+        const hashedPassword = await this.hashData(password)
         const user = await this.usersService.create({username, password: hashedPassword})
-        const token = await this.generateToken(user)
+        const tokens = await this.generateTokens(user)
+        await this.updateRefreshToken(user.id, tokens.refreshToken)
+
         return {
             user,
-            accessToken: token
+            ...tokens
         }
     }
 
     async login(data: CleanUserDto): Promise<AuthFinishedDto> {
-        const token = await this.generateToken(data)
+        const tokens = await this.generateTokens(data)
+        await this.updateRefreshToken(data.id, tokens.refreshToken)
+
         return {
             user: data,
-            accessToken: token
+            ...tokens
         }
     }
 
-    async checkAuth(data: JwtUserDto): Promise<AuthFinishedDto> {
-        const {iat, exp, ...cleanUser} = data
-        const accessToken = await this.generateToken(cleanUser)
+    async logout(userId: number): Promise<CleanUserDto> {
+        return await this.usersService.update(userId, {refreshToken: null})
+    }
+
+    async refreshTokens(userId: number, token: string): Promise<AuthFinishedDto> {
+        const user = await this.usersService.findOne({id: userId})
+        if (!user || !user.refreshToken) {
+            throw new HttpException('Дозвіл заборонено', HttpStatus.UNAUTHORIZED) // Access denied
+        }
+        const compareTokens = await bcrypt.compare(token, user.refreshToken)
+        if (!compareTokens) {
+            throw new HttpException('Дозвіл заборонено', HttpStatus.UNAUTHORIZED) // Access denied
+        }
+        const {password, createdAt, refreshToken, employee, ...cleanUser } = user
+        const tokens = await this.generateTokens(cleanUser)
+
         return {
             user: cleanUser,
-            accessToken
+            ...tokens
         }
     }
 }

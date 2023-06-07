@@ -14,9 +14,13 @@ export class RegisterDto extends LoginDto {
     password2: string
 }
 
-export interface AuthFinishedDto {
+export interface TokensDto {
+    accessToken: string;
+    refreshToken: string
+}
+
+export interface AuthFinishedDto extends TokensDto{
     user: CleanUserDto
-    accessToken: string
 }
 
 export interface JwtUserDto {

@@ -13,7 +13,7 @@
 .header_user_info {
     height: fit-content;
     align-self: center;
-    margin-left: 20px;
+    margin-left: 20px!important;
 }
 .header_user_info__full_name {
     font-weight: 600;

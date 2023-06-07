@@ -2,14 +2,14 @@ import {Body, Controller, Delete, Get, HttpStatus, Param, Post, Put, UploadedFil
 import {EmployeeService} from "./employee.service";
 import {CreateOrUpdateEmployeeDto, FreeVisitsParamDto} from "./employee.dto";
 import {MulterPhotoInterceptor} from "../config/multer.config";
-import {JwtGuard} from "../auth/guards/jwt.guard";
+import {JwtAccessGuard} from "../auth/guards/jwt-access.guard";
 import {RolesGuard} from "../role/roles.guard";
 import {Roles} from "../role/role.decorator";
 import {RoleEnum} from "../role/roles.enum";
 
 
 @Controller('admin/employee')
-@UseGuards(RolesGuard, JwtGuard)
+@UseGuards(RolesGuard, JwtAccessGuard)
 export class EmployeeAdminController {
     constructor(
         private readonly employeeService: EmployeeService,

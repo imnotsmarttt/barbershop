@@ -6,5 +6,5 @@ export interface CreateUserDto {
 export interface CleanUserDto {
     id: number;
     username: string;
-    role: string
+    role: string;
 }

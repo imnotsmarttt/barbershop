@@ -2,11 +2,11 @@ import {Body, Controller, Delete, Get, HttpStatus, Param, Post, Put, UseGuards} 
 import {BranchService} from "./branch.service";
 import {CreateOrUpdateBranchDto} from "./branchDto";
 import {RolesGuard} from "../role/roles.guard";
-import {JwtGuard} from "../auth/guards/jwt.guard";
+import {JwtAccessGuard} from "../auth/guards/jwt-access.guard";
 import {Roles} from "../role/role.decorator";
 import {RoleEnum} from "../role/roles.enum";
 
-@UseGuards(RolesGuard, JwtGuard)
+@UseGuards(RolesGuard, JwtAccessGuard)
 @Controller('admin/branch')
 export class BranchAdminController {
     constructor(

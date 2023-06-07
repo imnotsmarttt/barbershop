@@ -2,11 +2,11 @@ import {Body, Controller, Delete, Get, HttpStatus, Param, Post, Put, Query, UseG
 import {VisitsService} from "./visits.service";
 import {CreateOrUpdateVisitDto} from "./visit.dto";
 import {RolesGuard} from "../role/roles.guard";
-import {JwtGuard} from "../auth/guards/jwt.guard";
+import {JwtAccessGuard} from "../auth/guards/jwt-access.guard";
 import {Roles} from "../role/role.decorator";
 import {RoleEnum} from "../role/roles.enum";
 
-@UseGuards(RolesGuard, JwtGuard)
+@UseGuards(RolesGuard, JwtAccessGuard)
 @Controller('admin/visits')
 export class VisitsAdminController {
     constructor(private readonly visitsService: VisitsService) {}

@@ -22,4 +22,7 @@ export class User {
 
     @CreateDateColumn({default: () => 'CURRENT_TIMESTAMP(6)'})
     createdAt: Date
+
+    @Column({nullable: true, default: null})
+    refreshToken: string
 }

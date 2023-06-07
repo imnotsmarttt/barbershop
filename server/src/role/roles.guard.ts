@@ -3,7 +3,7 @@ import {Reflector} from "@nestjs/core";
 import {RoleEnum} from "./roles.enum";
 import {ROLES_KEY} from "./role.decorator";
 import {JwtService} from "@nestjs/jwt";
-import {JWT_SECRET_KEY} from "../config/config";
+import {JWT_ACCESS_SECRET_KEY} from "../config/config";
 
 @Injectable()
 export class RolesGuard implements CanActivate {
@@ -24,7 +24,7 @@ export class RolesGuard implements CanActivate {
             return false
         }
         try {
-            const payload = this.jwtService.verify(token, {publicKey: JWT_SECRET_KEY})
+            const payload = this.jwtService.verify(token, {publicKey: JWT_ACCESS_SECRET_KEY})
             return payload.role === requiredRole
         } catch (e) {
             return  false

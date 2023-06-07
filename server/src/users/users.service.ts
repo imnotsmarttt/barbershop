@@ -30,7 +30,17 @@ export class UsersService {
     async create(data: CreateUserDto): Promise<CleanUserDto> {
         const createdUser = await this.usersRepository.create({...data, role: RoleEnum.user})
         await this.usersRepository.save(createdUser)
-        const {password, createdAt, ...cleanUser} = createdUser
+        const {password, createdAt, refreshToken, ...cleanUser} = createdUser
+        return cleanUser
+    }
+
+    async update(userId: number, data: object): Promise<CleanUserDto> {
+        const user = await this.findOneWithError({id: userId})
+        for (const [key, value] of Object.entries(data)) {
+            user[key] = value
+        }
+        await this.usersRepository.save(user)
+        const {password, createdAt, refreshToken, ...cleanUser} = user
         return cleanUser
     }
 }
