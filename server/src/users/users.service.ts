@@ -15,10 +15,16 @@ export class UsersService {
     ) {
     }
 
+    getCleanUser(user: User): CleanUserDto {
+        const {password, refreshToken, employee, createdAt, ...cleanUser} = user
+        return  cleanUser
+    }
+
     async findOne(query: FindOneQueryDto): Promise<User> {
         return await this.usersRepository.findOneBy(query)
     }
 
+    // controller services
     async findOneWithError(query: FindOneQueryDto): Promise<User> {
         const user = await this.usersRepository.findOneBy(query)
         if (!user) {
@@ -30,8 +36,7 @@ export class UsersService {
     async create(data: CreateUserDto): Promise<CleanUserDto> {
         const createdUser = await this.usersRepository.create({...data, role: RoleEnum.user})
         await this.usersRepository.save(createdUser)
-        const {password, createdAt, refreshToken, ...cleanUser} = createdUser
-        return cleanUser
+        return this.getCleanUser(createdUser)
     }
 
     async update(userId: number, data: object): Promise<CleanUserDto> {
@@ -40,7 +45,6 @@ export class UsersService {
             user[key] = value
         }
         await this.usersRepository.save(user)
-        const {password, createdAt, refreshToken, ...cleanUser} = user
-        return cleanUser
+        return this.getCleanUser(user)
     }
 }

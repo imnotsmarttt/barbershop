@@ -24,8 +24,7 @@ export class AuthService {
         if (user) {
             const comparePassword = await bcrypt.compare(password, user.password)
             if (comparePassword) {
-                const {password, createdAt, ...cleanUser} = user
-                return cleanUser
+                return this.usersService.getCleanUser(user)
             }
         }
         return null
@@ -101,8 +100,10 @@ export class AuthService {
         if (!compareTokens) {
             throw new HttpException('Дозвіл заборонено', HttpStatus.UNAUTHORIZED) // Access denied
         }
-        const {password, createdAt, refreshToken, employee, ...cleanUser } = user
+
+        const cleanUser = this.usersService.getCleanUser(user)
         const tokens = await this.generateTokens(cleanUser)
+        await this.updateRefreshToken(cleanUser.id, tokens.refreshToken)
 
         return {
             user: cleanUser,
