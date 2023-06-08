@@ -1,19 +1,19 @@
-import {createAsyncThunk, createSlice, PayloadAction} from "@reduxjs/toolkit";
+import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import {UserType} from "../../types/auth-types";
-import axios, {AxiosError} from 'axios'
-import {API_URL} from "../../config";
-import {getAxiosError} from "../services";
+import {getError} from "../services";
+import {axiosInstance} from "../../api/axios_instance";
+import {AxiosError} from "axios";
 
 interface AuthStateType {
     isAuth: boolean
     accessToken: string | null,
     refreshToken: string | null,
-    user: UserType | {},
+    user: UserType | null,
     fetching: 'pending' | 'succeeded',
     error: string
 }
 
-interface AuthSuccessActionType {
+export interface AuthSuccessActionType {
     accessToken: string,
     refreshToken: string,
     user: UserType
@@ -48,13 +48,26 @@ const authSlice = createSlice({
             state.isAuth = false
             state.accessToken = null
             state.refreshToken = null
-            state.user = {}
+            state.user = null
             state.fetching = 'succeeded'
 
         },
+        refreshTokens(state, action) {
+            console.log(action.payload)
+            const {accessToken, refreshToken, user} = action.payload
+            localStorage.setItem('accessToken', accessToken)
+            localStorage.setItem('refreshToken', refreshToken)
+            localStorage.setItem('user', JSON.stringify(user))
+
+            state.isAuth = true
+            state.accessToken = accessToken
+            state.refreshToken = refreshToken
+            state.user = user
+            state.fetching = 'succeeded'
+        },
         setError(state, action) {
             state.error = action.payload.error
-        }
+        },
     },
     extraReducers: builder => {
         builder
@@ -80,14 +93,36 @@ const authSlice = createSlice({
                 localStorage.removeItem('accessToken')
                 localStorage.removeItem('refreshToken')
                 localStorage.removeItem('user')
-                console.log(action.payload)
+
                 state.isAuth = false
                 state.error = action.payload ? action.payload : 'Помилка'
                 state.accessToken = null
                 state.refreshToken = null
-                state.user = {}
+                state.user = null
                 state.fetching = 'succeeded'
 
+            })
+            // refresh tokens
+            .addCase(refreshTokensThunk.fulfilled, (state, action) => {
+                const {accessToken, refreshToken, user} = action.payload
+                localStorage.setItem('accessToken', accessToken)
+                localStorage.setItem('refreshToken', refreshToken)
+                localStorage.setItem('user', JSON.stringify(user))
+
+                state.isAuth = true
+                state.accessToken = accessToken
+                state.refreshToken = refreshToken
+                state.user = user
+            })
+            .addCase(refreshTokensThunk.rejected, (state) => {
+                localStorage.removeItem('accessToken')
+                localStorage.removeItem('refreshToken')
+                localStorage.removeItem('user')
+
+                state.isAuth = false
+                state.accessToken = null
+                state.refreshToken = null
+                state.user = null
             })
             // register
             .addCase(registerThunk.pending, (state) => {
@@ -117,8 +152,19 @@ const authSlice = createSlice({
                 state.error = action.payload ? action.payload : 'Помилка'
                 state.accessToken = null
                 state.refreshToken = null
-                state.user = {}
+                state.user = null
                 state.fetching = 'succeeded'
+            })
+            // checkAuth
+            .addCase(checkAuth.rejected, (state) => {
+                localStorage.removeItem('accessToken')
+                localStorage.removeItem('refreshToken')
+                localStorage.removeItem('user')
+
+                state.isAuth = false
+                state.accessToken = null
+                state.refreshToken = null
+                state.user = null
             })
     }
 })
@@ -128,7 +174,7 @@ export default authSlice.reducer
 // selectors
 
 // actions
-export const {logout, toggleFetching, setError} = authSlice.actions
+export const {logout, toggleFetching, setError, refreshTokens} = authSlice.actions
 
 export const login = createAsyncThunk<AuthSuccessActionType,
     { username: string, password: string },
@@ -136,20 +182,14 @@ export const login = createAsyncThunk<AuthSuccessActionType,
     'auth/login',
     async (payload, thunkAPI) => {
         try {
-            const data = {
+            const response = await axiosInstance.post(`auth/login`, {
                 username: payload.username,
                 password: payload.password
-            }
-            const config = {
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            }
-            const response = await axios.post(`${API_URL}auth/login`, data, config)
+            })
             return response.data as AuthSuccessActionType
         } catch (e) {
             const error = e as Error | AxiosError
-            return thunkAPI.rejectWithValue(getAxiosError(error))
+            return thunkAPI.rejectWithValue(getError(error))
         }
     }
 )
@@ -160,22 +200,40 @@ export const registerThunk = createAsyncThunk<AuthSuccessActionType,
     'auth/register',
     async (payload, thunkAPI) => {
         try {
-            const data = {
+            const response = await axiosInstance.post(`auth/register`, {
                 username: payload.username,
                 password: payload.password,
                 password2: payload.password2
-            }
-            const config = {
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            }
-            const response = await axios.post(`${API_URL}auth/register`, data, config)
+            })
             return response.data as AuthSuccessActionType
         } catch (e) {
             const error = e as Error | AxiosError
-            return thunkAPI.rejectWithValue(getAxiosError(error))
+            return thunkAPI.rejectWithValue(getError(error))
         }
+    }
+)
+
+export const refreshTokensThunk = createAsyncThunk<AuthSuccessActionType>(
+    'auth/refreshTokens',
+    async () => {
+        const response = await axiosInstance.get('auth/refresh', {
+            headers: {
+                "Authorization": `Bearer ${localStorage.getItem('refreshToken')}`
+            }
+        })
+        return response.data
+    }
+)
+
+export const checkAuth = createAsyncThunk<AuthSuccessActionType>(
+    'auth/checkAuth',
+    async () => {
+        const response = await axiosInstance.get('auth/me', {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+            }
+        })
+        return response.data as AuthSuccessActionType
     }
 )
 

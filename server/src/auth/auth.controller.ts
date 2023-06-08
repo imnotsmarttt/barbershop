@@ -12,10 +12,21 @@ export class AuthController {
     ) {
     }
 
+    @Post('register')
+    async register(@Body() body: RegisterDto) {
+        return await this.authService.register(body)
+    }
+
     @UseGuards(LocalGuard)
     @Post('login')
     async login(@Req() req) {
         return await this.authService.login(req.user)
+    }
+
+    @UseGuards(JwtRefreshGuard)
+    @Get('refresh')
+    async refreshTokens(@Req() req) {
+        return await this.authService.refreshTokens(req.user.id, req.user.refreshToken)
     }
 
     @UseGuards(JwtAccessGuard)
@@ -24,14 +35,9 @@ export class AuthController {
         return await this.authService.logout(req.user.id)
     }
 
-    @Post('register')
-    async register(@Body() body: RegisterDto) {
-        return await this.authService.register(body)
-    }
-
-    @UseGuards(JwtRefreshGuard)
-    @Get('refresh')
-    async refreshTokens(@Req() req) {
-        return await this.authService.refreshTokens(req.user.id, req.user.refreshToken)
+    @UseGuards(JwtAccessGuard)
+    @Get('me')
+    async me(@Req() req) {
+        return req.user.id
     }
 }
