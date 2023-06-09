@@ -4,8 +4,8 @@ import {RootStateType} from "types/store/store";
 import {useEffect} from "react";
 import {useAppDispatch} from "hooks/store";
 import {fetchVisitList} from "store/slices/admin";
-import {dateFormatting} from "utils/time";
 import {useSearchParams} from "react-router-dom";
+import {dateFormatInstance} from "lib/intl";
 
 function AdminVisits() {
     const [searchParams] = useSearchParams()
@@ -20,12 +20,14 @@ function AdminVisits() {
     const headerTitles =  ['ID', 'ПІБ', 'Телефон', 'Початок', 'Працівник', 'Послуга', 'Ціна', 'Статус']
 
     // generate rows for table
+
     const rows = visitList.map(visit => {
         const {id, fullName, phoneNumber, startDate, status} = visit
-        const start = dateFormatting(startDate)
+        const date = new Date(startDate)
+
         return {
             id, fullName, phoneNumber,
-            startDate: `${start.date}, ${start.time}`,
+            startDate: dateFormatInstance.format(date),
             employee: `${visit.employee.firstName} ${visit.employee.lastName}`,
             service: visit.service.service,
             price: `${visit.service.price}₴`,

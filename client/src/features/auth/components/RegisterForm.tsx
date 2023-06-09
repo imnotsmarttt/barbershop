@@ -26,7 +26,7 @@ function RegisterForm() {
     useEffect(() => {
 
         dispatch(setError(''))
-    }, [])
+    }, [dispatch])
 
 
     const handleRegister: SubmitHandler<Inputs> = (data) => {
