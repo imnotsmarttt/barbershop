@@ -1,10 +1,10 @@
-import AdminMainContent from "../../Components/AdminComponents/AdminMainContent";
+import AdminMainContent from "features/admin/components/MainContent/AdminMainContent";
 import {useSelector} from "react-redux";
-import {RootStateType} from "../../store/store";
+import {RootStateType} from "types/store/store";
 import {useEffect} from "react";
-import {useAppDispatch} from "../../hook";
-import {fetchVisitList} from "../../store/slices/admin";
-import {dateFormatting} from "../../services/admin";
+import {useAppDispatch} from "hooks/store";
+import {fetchVisitList} from "store/slices/admin";
+import {dateFormatting} from "utils/time";
 import {useSearchParams} from "react-router-dom";
 
 function AdminVisits() {

@@ -1,6 +1,7 @@
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
-import {AdminStateType, AdminVisitsStateType} from "../../types/store/admin-state-types";
-import {axiosInstance} from "../../api/axios_instance";
+import {AdminStateType, AdminVisitsStateType} from "types/store/admin";
+import {axiosInstance, getError} from "lib/axios";
+import {AxiosError} from "axios";
 
 
 const initialState: AdminStateType = {
@@ -55,7 +56,8 @@ export const fetchVisitList = createAsyncThunk<AdminVisitsStateType,
             const response = await axiosInstance.get(`admin/visits?${payload.query}`, config)
             return {...response.data} as AdminVisitsStateType
         } catch (e) {
-            return thunkAPI.rejectWithValue('Помилка')
+            const error = e as AxiosError || Error
+            return thunkAPI.rejectWithValue(getError(error))
         }
     }
 )

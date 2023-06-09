@@ -1,15 +1,15 @@
-import {FormEvent, useEffect, useState} from "react";
+import {useEffect} from "react";
 import {NavLink} from "react-router-dom";
 
 import s from './Auth.module.css'
 
-import {registerThunk, setError} from "../../store/slices/auth";
-import {useAppDispatch} from "../../hook";
+import {registerThunk, setError} from "store/slices/auth";
+import {useAppDispatch} from "hooks/store";
 import {useSelector} from "react-redux";
-import {RootStateType} from "../../store/store";
+import {RootStateType} from "types/store/store";
 
 import {Alert, Button, Grid, TextField} from "@mui/material";
-import Loader from "../../Components/Loader/Loader";
+import Loader from "components/Loader/Loader";
 import {SubmitHandler, useForm} from "react-hook-form";
 
 type Inputs = {
@@ -18,7 +18,7 @@ type Inputs = {
     password2: string;
 }
 
-function Register() {
+function RegisterForm() {
     const {register, handleSubmit, formState: {errors}} = useForm<Inputs>({mode: "onChange"})
     const {error, fetching} = useSelector((state: RootStateType) => state.auth)
     const dispatch = useAppDispatch()
@@ -27,9 +27,6 @@ function Register() {
 
         dispatch(setError(''))
     }, [])
-
-
-
 
 
     const handleRegister: SubmitHandler<Inputs> = (data) => {
@@ -109,4 +106,4 @@ function Register() {
     </Grid>
 }
 
-export default Register
+export default RegisterForm

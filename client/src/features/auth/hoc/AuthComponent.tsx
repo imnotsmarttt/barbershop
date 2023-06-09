@@ -1,9 +1,9 @@
 import {useSelector} from "react-redux";
-import {RootStateType} from "../store/store";
+import {RootStateType} from "types/store/store";
 import {Navigate} from 'react-router-dom'
-import {useAppDispatch} from "../hook";
+import {useAppDispatch} from "hooks/store";
 import {useEffect} from "react";
-import {checkAuth} from "../store/slices/auth";
+import {checkAuth} from "store/slices/auth";
 
 type PropsType = {
     children: JSX.Element
@@ -15,7 +15,7 @@ function AuthComponent({children}: PropsType) {
 
     useEffect(() => {
         dispatch(checkAuth())
-    }, [])
+    }, [dispatch])
 
 
     if (!isAuth) {

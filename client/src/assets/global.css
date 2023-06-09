@@ -1,21 +1,21 @@
 @font-face {
     font-family: 'Manrope';
-    src: url("./fonts/Manrope/ManropeLight.ttf") format('truetype');
+    src: url("fonts/Manrope/ManropeLight.ttf") format('truetype');
     font-weight: 300;
 }
 @font-face {
     font-family: 'Manrope';
-    src: url("./fonts/Manrope/ManropeRegular.ttf") format('truetype');
+    src: url("fonts/Manrope/ManropeRegular.ttf") format('truetype');
     font-weight: 400;
 }
 @font-face {
     font-family: 'Manrope';
-    src: url("./fonts/Manrope/ManropeMedium.ttf") format('truetype');
+    src: url("fonts/Manrope/ManropeMedium.ttf") format('truetype');
     font-weight: 500;
 }
 @font-face {
     font-family: 'Manrope';
-    src: url("./fonts/Manrope/ManropeBold.ttf") format('truetype');
+    src: url("fonts/Manrope/ManropeBold.ttf") format('truetype');
     font-weight: 700;
 }
 
@@ -44,4 +44,33 @@ a {
 
 input:-webkit-autofill {
     -webkit-box-shadow: inset 0 0 0 50px #fff!important;
+}
+
+/*GENERAL*/
+.App {
+    text-align: start;
+    min-height: 100vh;
+}
+
+.container {
+    max-width: 1440px;
+    margin: 0 auto;
+
+    display: flex;
+    flex-wrap: wrap;
+}
+
+/*TEXT*/
+.text {
+    font-style: normal;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 18px;
+
+    color: #808080;
+}
+
+.error_text {
+    color: #d32f2f;
+    font-size: 12px;
 }

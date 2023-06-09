@@ -16,14 +16,14 @@ export class ServicesAdminController {
 
     @Roles(RoleEnum.admin)
     @Post()
-    @MulterPhotoInterceptor('./files/services', 'photo')
+    @MulterPhotoInterceptor('./files/utils', 'photo')
     async create(@Body() body: CreateOrUpdateServicesDto, @UploadedFile() photo: Express.Multer.File | undefined) {
         return await this.servicesService.create(body, photo)
     }
 
     @Roles(RoleEnum.admin)
     @Put(':id')
-    @MulterPhotoInterceptor('./files/services', 'photo')
+    @MulterPhotoInterceptor('./files/utils', 'photo')
     async update(
         @Param('id') id: number,
         @Body() body: CreateOrUpdateServicesDto,

@@ -56,7 +56,7 @@ export class AuthService {
         return await bcrypt.hash(data, BCRYPT_SALT)
     }
 
-    // controller services
+    // controller utils
     async register(data: RegisterDto): Promise<AuthFinishedDto> {
         const {username, password, password2} = data
         const userExist = await this.usersService.findOne({username})

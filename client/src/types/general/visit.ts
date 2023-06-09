@@ -1,5 +1,5 @@
-import {EmployeeInterface} from "./emoloyee-types";
-import {ServiceInterface} from "./services-type";
+import {EmployeeInterface} from "./emoloyee";
+import {ServiceInterface} from "./services";
 
 export interface VisitInterface {
     id: number;

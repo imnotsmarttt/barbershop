@@ -1,4 +1,4 @@
-import {VisitInterface} from "../visit-types";
+import {VisitInterface} from "../general/visit";
 
 // visits
 export type AdminVisitsStateType = {

@@ -1,15 +1,17 @@
 import React, {useEffect} from 'react';
-import './App.css';
-
 import {Routes, Route, BrowserRouter} from 'react-router-dom'
-import Login from "./Pages/Auth/Login";
-import Register from "./Pages/Auth/Register";
-import Auth from "./Pages/Auth/Auth";
-import Admin from "./Pages/Admin/Admin";
-import AdminVisits from "./Pages/Admin/AdminVisits";
-import {useAppDispatch} from "./hook";
-import {refreshTokensThunk} from "./store/slices/auth";
-import AuthComponent from "./HOC/AuthComponent";
+
+import Auth from "pages/Auth";
+import Admin from "pages/Admin";
+
+import LoginForm from "features/auth/components/LoginForm";
+import RegisterForm from "features/auth/components/RegisterForm";
+import AuthComponent from "features/auth/hoc/AuthComponent";
+import AdminVisits from "features/admin/pages/AdminVisits";
+
+import {useAppDispatch} from "hooks/store";
+import {refreshTokensThunk} from "store/slices/auth";
+
 
 function App() {
     const dispatch = useAppDispatch()
@@ -29,15 +31,15 @@ function App() {
             clearInterval(tokenRefreshInterval);
         };
 
-    }, [])
+    }, [dispatch])
 
     return (
         <div className="App">
             <BrowserRouter>
                 <Routes>
                     <Route path='a' element={<Auth/>}>
-                        <Route path='login' element={<Login/>}/>
-                        <Route path='register' element={<Register/>}/>
+                        <Route path='login' element={<LoginForm/>}/>
+                        <Route path='register' element={<RegisterForm/>}/>
                     </Route>
                     <Route path='admin' element={<AuthComponent children={<Admin/>}/>}>
                         <Route path='visits' element={<AdminVisits/>}/>

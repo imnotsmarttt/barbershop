@@ -1,8 +1,8 @@
 import {Grid} from "@mui/material";
 import AdminNavItem from "./AdminNavItem";
 
-import {useAppDispatch} from "../../../hook";
-import {logout} from '../../../store/slices/auth'
+import {useAppDispatch} from "hooks/store";
+import {logout} from 'store/slices/auth'
 
 import s from './AdminNav.module.css'
 

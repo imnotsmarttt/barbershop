@@ -1,26 +1,10 @@
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
-import {UserType} from "../../types/auth-types";
-import {getError} from "../services";
-import {axiosInstance} from "../../api/axios_instance";
+import {axiosInstance, getError} from "lib/axios";
 import {AxiosError} from "axios";
-
-interface AuthStateType {
-    isAuth: boolean
-    accessToken: string | null,
-    refreshToken: string | null,
-    user: UserType | null,
-    fetching: 'pending' | 'succeeded',
-    error: string
-}
-
-export interface AuthSuccessActionType {
-    accessToken: string,
-    refreshToken: string,
-    user: UserType
-}
+import {Auth, AuthSuccessActionType} from "types/store/auth";
 
 
-const initialState: AuthStateType = {
+const initialState: Auth = {
     isAuth: !!localStorage.getItem('accessToken'),
     accessToken: localStorage.getItem('accessToken'),
     refreshToken: localStorage.getItem('refreshToken'),
@@ -174,7 +158,7 @@ export default authSlice.reducer
 // selectors
 
 // actions
-export const {logout, toggleFetching, setError, refreshTokens} = authSlice.actions
+export const {logout, setError, refreshTokens} = authSlice.actions
 
 export const login = createAsyncThunk<AuthSuccessActionType,
     { username: string, password: string },
@@ -188,7 +172,7 @@ export const login = createAsyncThunk<AuthSuccessActionType,
             })
             return response.data as AuthSuccessActionType
         } catch (e) {
-            const error = e as Error | AxiosError
+            const error = e as AxiosError || Error
             return thunkAPI.rejectWithValue(getError(error))
         }
     }

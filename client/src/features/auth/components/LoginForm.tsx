@@ -1,30 +1,30 @@
-import {FormEvent, useEffect, useState} from "react";
+import {useEffect} from "react";
 import {NavLink} from "react-router-dom";
+import {Alert, Button, Grid, TextField} from "@mui/material";
+import Loader from "components/Loader/Loader";
 
 import s from './Auth.module.css'
 
-import {login, setError} from "../../store/slices/auth";
-import {useAppDispatch} from "../../hook";
+import {login, setError} from "store/slices/auth";
+import {useAppDispatch} from "hooks/store";
 import {useSelector} from "react-redux";
-import {RootStateType} from "../../store/store";
+import {RootStateType} from "types/store/store";
 import {SubmitHandler, useForm} from "react-hook-form";
 
-import {Alert, Button, Grid, TextField} from "@mui/material";
-import Loader from "../../Components/Loader/Loader";
 
 type Inputs = {
     username: string;
     password: string
 }
 
-function Login() {
+function LoginForm() {
     const {register, handleSubmit, formState: {errors}} = useForm<Inputs>({mode: "onChange"})
     const {error, fetching} = useSelector((state: RootStateType) => state.auth)
     const dispatch = useAppDispatch()
 
     useEffect(() => {
         dispatch(setError(''))
-    }, [])
+    }, [dispatch])
 
     const handleLogin: SubmitHandler<Inputs> = (data) => {
         dispatch(login({
@@ -85,4 +85,4 @@ function Login() {
     )
 }
 
-export default Login
+export default LoginForm

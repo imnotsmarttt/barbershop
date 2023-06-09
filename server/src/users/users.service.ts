@@ -24,7 +24,7 @@ export class UsersService {
         return await this.usersRepository.findOneBy(query)
     }
 
-    // controller services
+    // controller utils
     async findOneWithError(query: FindOneQueryDto): Promise<User> {
         const user = await this.usersRepository.findOneBy(query)
         if (!user) {

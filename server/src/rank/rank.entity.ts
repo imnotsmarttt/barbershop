@@ -17,7 +17,7 @@ export class Rank {
     @OneToMany(() => Employee, (employee) => employee.rank, {onDelete: 'RESTRICT'})
     employees: Employee[]
 
-    // services
+    // utils
     @OneToMany(() => Service, (service) => service.rank, {onDelete: 'CASCADE'})
     services: Service[]
 }

@@ -1,6 +1,6 @@
 import {Navigate, Outlet} from "react-router-dom";
 import {useSelector} from "react-redux";
-import {RootStateType} from "../../store/store";
+import {RootStateType} from "../types/store/store";
 
 
 export function Auth() {

@@ -135,7 +135,7 @@ export class EmployeeService {
         return time // return received time if employee free
     }
 
-    // returns an array of services which going to end before next visit going to start
+    // returns an array of utils which going to end before next visit going to start
     async getAvailableServicesByTime(employeeVisits: Visit[], time: string, employeeRankId: number): Promise<ServiceWithRankDto[]> {
         const nextVisitTime: string = this.commonService.getTimeFromDatetime(employeeVisits.filter((visit) => {
             const visitStartString = this.commonService.getTimeFromDatetime(visit.startDate)
@@ -149,7 +149,7 @@ export class EmployeeService {
         })
     }
 
-    // get visits & available services by free time of employee
+    // get visits & available utils by free time of employee
     async getVisits(id: number, date: string): Promise<EmployeeFreeTime[]> {
         const employeeVisits = await this.visitsService.getAllVisitsByDate(id, date)
         const employee = await this.employeeRepository.findOne({
