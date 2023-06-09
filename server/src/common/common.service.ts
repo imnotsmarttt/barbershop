@@ -1,25 +1,32 @@
-import { Injectable } from '@nestjs/common';
+import {Injectable} from '@nestjs/common';
 import {SplitDatetimeDto} from "./common.dto";
 
 @Injectable()
 export class CommonService {
+    constructor() {
+    }
+
+
     // returns time from datetime
     getTimeFromDatetime(date: string): string {
         const d = new Date(date)
-        const year = d.getFullYear();
-        const month = d.getMonth();
-        const day = d.getDate();
-        const hours = d.getHours();
-        const minutes = d.getMinutes();
-        const seconds = d.getSeconds();
-        const utcDate = new Date(year, month, day, hours, minutes, seconds);
-        return `${String(utcDate.getHours()).padStart(2, '0')}:${String(utcDate.getMinutes()).padStart(2, '0')}:${String(utcDate.getSeconds()).padStart(2, '0')}`;
+
+        return new Intl.DateTimeFormat('ru', {
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit"
+        }).format(d)
     }
 
     // return date from datetime
     getDateFromDatetime(date: string): string {
         const d = new Date(date)
-        return d.toISOString().split('T')[0]
+
+        return new Intl.DateTimeFormat('ru', {
+            year: "numeric",
+            month: "numeric",
+            day: "numeric"
+        }).format(d)
     }
 
     // return object with date and time
@@ -38,6 +45,10 @@ export class CommonService {
         incrementedTime.setHours(Number(hours));
         incrementedTime.setMinutes(Number(minutes) + incrementMinutes);
         incrementedTime.setSeconds(Number(seconds));
-        return `${String(incrementedTime.getHours()).padStart(2, '0')}:${String(incrementedTime.getMinutes()).padStart(2, '0')}:${String(incrementedTime.getSeconds()).padStart(2, '0')}`;
+        return new Intl.DateTimeFormat('ru', {
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit"
+        }).format(incrementedTime)
     }
 }

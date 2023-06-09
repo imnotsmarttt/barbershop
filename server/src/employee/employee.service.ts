@@ -107,7 +107,7 @@ export class EmployeeService {
     }
 
     // check if employee has visit
-    async isBusy(visits: Visit[], visitTime: string, serviceDuration=30): Promise<false | string> {
+    async isBusy(visits: Visit[], visitTime: string, serviceDuration = 30): Promise<false | string> {
         const shiftTimeString = this.commonService.incrementTime(visitTime, serviceDuration)
 
         for (const visit of visits) {
@@ -136,16 +136,23 @@ export class EmployeeService {
     }
 
     // returns an array of utils which going to end before next visit going to start
-    async getAvailableServicesByTime(employeeVisits: Visit[], time: string, employeeRankId: number): Promise<ServiceWithRankDto[]> {
-        const nextVisitTime: string = this.commonService.getTimeFromDatetime(employeeVisits.filter((visit) => {
-            const visitStartString = this.commonService.getTimeFromDatetime(visit.startDate)
-            return time < visitStartString
-        })[0]?.startDate)
+    async getAvailableServicesByTime(employeeVisits: Visit[], time: string, openAt: string, closeAt: string, employeeRankId: number): Promise<ServiceWithRankDto[]> {
+        const nextVisitDate: string | undefined  = employeeVisits.filter((visit) => {
+            if (visit.startDate) {
+                const visitStartString = this.commonService.getTimeFromDatetime(visit.startDate)
+                return time < visitStartString
+            }
+
+        })[0]?.startDate
+
+
+        const nextVisitTime: string = nextVisitDate ? this.commonService.getTimeFromDatetime(nextVisitDate) : closeAt
+
         const employeeServices = await this.servicesService.findAllByRankId(employeeRankId)
 
         return employeeServices.filter(service => {
             const serviceEndTime = this.commonService.incrementTime(time, service.durationMin)
-            return serviceEndTime < nextVisitTime
+            return serviceEndTime < nextVisitTime && (serviceEndTime > openAt && serviceEndTime < closeAt)
         })
     }
 
@@ -157,15 +164,17 @@ export class EmployeeService {
             relations: ['branch', 'rank']
         })
         const response: EmployeeFreeTime[] = []
-        let startTime = employee.branch.openAt // get start time
-        let endTime = employee.branch.closeAt // get end time
+        let openAt = employee.branch.openAt // get start time
+        let closeAt = employee.branch.closeAt // get end time
 
         const newDateShift = 40
-        while (startTime < endTime) {
-            const start = await this.checkEmployeeTime(employeeVisits, startTime) // return received or changed time
-            const availableServices = await this.getAvailableServicesByTime(employeeVisits, start, employee.rank.id)
-            response.push({start, availableServices})
-            startTime = this.commonService.incrementTime(start, newDateShift) // set time for next iteration
+        while (openAt < closeAt) {
+            const start = await this.checkEmployeeTime(employeeVisits, openAt) // return received or changed time
+            const availableServices = await this.getAvailableServicesByTime(employeeVisits, start, employee.branch.openAt, closeAt, employee.rank.id)
+            if (availableServices.length) {
+                response.push({start, availableServices})
+            }
+            openAt = this.commonService.incrementTime(start, newDateShift) // set time for next iteration
         }
 
         return response
