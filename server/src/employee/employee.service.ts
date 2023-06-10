@@ -2,7 +2,7 @@ import {forwardRef, HttpException, HttpStatus, Inject, Injectable} from '@nestjs
 import {Repository} from "typeorm";
 import {Employee} from "./employee.entity";
 import {InjectRepository} from "@nestjs/typeorm";
-import {CreateOrUpdateEmployeeDto, EmployeeDto, EmployeeFreeTime} from "./employee.dto";
+import {CreateOrUpdateEmployeeDto, EmployeeDto, EmployeeFreeTime, FindAllEmployeeResult} from "./employee.dto";
 import {BranchService} from "../branch/branch.service";
 import {RankService} from "../rank/rank.service";
 import {UsersService} from "../users/users.service";
@@ -28,7 +28,6 @@ export class EmployeeService {
         private readonly visitsService: VisitsService
     ) {
     }
-
 
     async create(data: CreateOrUpdateEmployeeDto, photo: Express.Multer.File | undefined): Promise<EmployeeDto> {
         const {
@@ -106,6 +105,26 @@ export class EmployeeService {
         return employee
     }
 
+    async findAll(query): Promise<FindAllEmployeeResult> {
+        const page: number = query.page || 1
+        const take: number = query.take || 10
+        const skip: number = (page - 1) * take
+        const employeeQueryBuilder = await this.employeeRepository.createQueryBuilder('employee')
+            .leftJoinAndSelect('employee.rank', 'rank')
+            .leftJoinAndSelect('employee.branch', 'branch')
+            .skip(skip)
+            .take(take)
+            .getManyAndCount()
+
+        const [employeeList, itemCount] = employeeQueryBuilder
+
+        return {
+            employeeList,
+            itemCount,
+            pageSize: take
+        }
+    }
+
     // check if employee has visit
     async isBusy(visits: Visit[], visitTime: string, serviceDuration = 30): Promise<false | string> {
         const shiftTimeString = this.commonService.incrementTime(visitTime, serviceDuration)
@@ -137,7 +156,7 @@ export class EmployeeService {
 
     // returns an array of utils which going to end before next visit going to start
     async getAvailableServicesByTime(employeeVisits: Visit[], time: string, openAt: string, closeAt: string, employeeRankId: number): Promise<ServiceWithRankDto[]> {
-        const nextVisitDate: string | undefined  = employeeVisits.filter((visit) => {
+        const nextVisitDate: string | undefined = employeeVisits.filter((visit) => {
             if (visit.startDate) {
                 const visitStartString = this.commonService.getTimeFromDatetime(visit.startDate)
                 return time < visitStartString

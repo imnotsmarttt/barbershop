@@ -27,3 +27,9 @@ export interface ServiceDto {
 export interface ServiceWithRankDto extends ServiceDto {
     rank: RankDto
 }
+
+export interface FindAllServicesResultDto {
+    serviceList: ServiceWithRankDto[];
+    itemCount: number;
+    pageSize: number;
+}

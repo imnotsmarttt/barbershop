@@ -25,3 +25,9 @@ export interface BranchDto {
     openAt: string
     closeAt: string
 }
+
+export interface FindAllBranchResultDto {
+    branchList: BranchDto[];
+    itemCount: number;
+    pageSize: number;
+}

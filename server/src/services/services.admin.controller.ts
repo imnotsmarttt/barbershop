@@ -1,4 +1,16 @@
-import {Body, Controller, Delete, HttpStatus, Param, Post, Put, UploadedFile, UseGuards} from '@nestjs/common';
+import {
+    Body,
+    Controller,
+    Delete,
+    Get,
+    HttpStatus,
+    Param,
+    Post,
+    Put,
+    Query,
+    UploadedFile,
+    UseGuards
+} from '@nestjs/common';
 import {ServicesService} from "./services.service";
 import {CreateOrUpdateServicesDto} from "./services.dto";
 import {MulterPhotoInterceptor} from "../config/multer.config";
@@ -8,11 +20,17 @@ import {Roles} from "../role/role.decorator";
 import {RoleEnum} from "../role/roles.enum";
 
 @UseGuards(RolesGuard, JwtAccessGuard)
-@Controller('services')
+@Controller('admin/services')
 export class ServicesAdminController {
     constructor(
         private readonly servicesService: ServicesService
     ) {}
+
+    @Roles(RoleEnum.admin)
+    @Get()
+    async findAll(@Query() query) {
+        return await this.servicesService.findAll(query)
+    }
 
     @Roles(RoleEnum.admin)
     @Post()

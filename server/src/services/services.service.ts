@@ -6,7 +6,7 @@ import {Service} from "./services.entity";
 
 import {RankService} from "../rank/rank.service";
 
-import {CreateOrUpdateServicesDto} from "./services.dto";
+import {CreateOrUpdateServicesDto, FindAllServicesResultDto} from "./services.dto";
 import {FindOneQueryDto} from "../config/general.dto";
 
 import {unlink} from "fs/promises";
@@ -18,6 +18,25 @@ export class ServicesService {
         private readonly serviceRepository: Repository<Service>,
         private readonly rankService: RankService
     ) {
+    }
+
+    async findAll(query): Promise<FindAllServicesResultDto> {
+        const page: number = query.page || 1
+        const take: number = query.take || 10
+        const skip: number = (page - 1) * take
+
+        const servicesQueryBuilder = await this.serviceRepository.createQueryBuilder('service')
+            .leftJoinAndSelect('service.rank', 'rank')
+            .take(take)
+            .skip(skip)
+            .getManyAndCount()
+
+        const [serviceList, itemCount] = servicesQueryBuilder
+        return {
+            serviceList,
+            itemCount,
+            pageSize: take
+        }
     }
 
     async create(data: CreateOrUpdateServicesDto, photo: Express.Multer.File | undefined): Promise<Service> {

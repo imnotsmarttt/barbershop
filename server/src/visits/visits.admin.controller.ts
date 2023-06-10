@@ -13,8 +13,8 @@ export class VisitsAdminController {
 
     @Roles(RoleEnum.admin)
     @Get()
-    async getAll(@Query() query) {
-        return this.visitsService.getAll(query)
+    async findAll(@Query() query) {
+        return this.visitsService.findAll(query)
     }
 
     @Roles(RoleEnum.admin)

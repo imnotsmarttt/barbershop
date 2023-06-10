@@ -1,4 +1,16 @@
-import {Body, Controller, Delete, Get, HttpStatus, Param, Post, Put, UploadedFile, UseGuards,} from '@nestjs/common';
+import {
+    Body,
+    Controller,
+    Delete,
+    Get,
+    HttpStatus,
+    Param,
+    Post,
+    Put,
+    Query,
+    UploadedFile,
+    UseGuards,
+} from '@nestjs/common';
 import {EmployeeService} from "./employee.service";
 import {CreateOrUpdateEmployeeDto, FreeVisitsParamDto} from "./employee.dto";
 import {MulterPhotoInterceptor} from "../config/multer.config";
@@ -14,6 +26,13 @@ export class EmployeeAdminController {
     constructor(
         private readonly employeeService: EmployeeService,
     ) {}
+
+
+    @Roles(RoleEnum.admin)
+    @Get()
+    async findAll(@Query() query) {
+        return await this.employeeService.findAll(query)
+    }
 
     @Roles(RoleEnum.admin)
     @Post()

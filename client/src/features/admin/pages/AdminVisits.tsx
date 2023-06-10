@@ -5,7 +5,7 @@ import {useEffect} from "react";
 import {useAppDispatch} from "hooks/store";
 import {fetchVisitList} from "store/slices/admin";
 import {useSearchParams} from "react-router-dom";
-import {dateFormatInstance} from "lib/intl";
+import {dateTimeFormatInstance} from "lib/intl";
 
 function AdminVisits() {
     const [searchParams] = useSearchParams()
@@ -17,17 +17,16 @@ function AdminVisits() {
     const {visitList, pageSize, visitCount} = useSelector((state: RootStateType) => state.admin.visits)
 
     // titles for table header
-    const headerTitles =  ['ID', 'ПІБ', 'Телефон', 'Початок', 'Працівник', 'Послуга', 'Ціна', 'Статус']
+    const headerTitles = ['ID', 'ПІБ', 'Телефон', 'Початок', 'Працівник', 'Послуга', 'Ціна', 'Статус']
 
     // generate rows for table
-
     const rows = visitList.map(visit => {
         const {id, fullName, phoneNumber, startDate, status} = visit
         const date = new Date(startDate)
 
         return {
             id, fullName, phoneNumber,
-            startDate: dateFormatInstance.format(date),
+            startDate: dateTimeFormatInstance.format(date),
             employee: `${visit.employee.firstName} ${visit.employee.lastName}`,
             service: visit.service.service,
             price: `${visit.service.price}₴`,
@@ -36,7 +35,12 @@ function AdminVisits() {
     })
 
     return (
-        <AdminMainContent headerTitles={headerTitles} rows={rows} rowsCount={visitCount} pageSize={pageSize} />
+        <AdminMainContent
+            headerTitles={headerTitles}
+            rows={rows}
+            rowsCount={visitCount}
+            pageSize={pageSize}
+        />
     )
 }
 

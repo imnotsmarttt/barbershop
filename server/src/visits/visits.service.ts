@@ -27,7 +27,7 @@ export class VisitsService {
         return start.toISOString()
     }
 
-    async getAll(query): Promise<GetAllVisitsResultDto> {
+    async findAll(query): Promise<GetAllVisitsResultDto> {
         const page: number = query.page || 1
         const take: number = query.take || 10
         const skip: number = (page - 1) * take

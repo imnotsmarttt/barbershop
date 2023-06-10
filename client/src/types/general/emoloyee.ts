@@ -1,3 +1,6 @@
+import {RankInterface} from "./rank";
+import {BranchInterface} from "./branch";
+
 export interface EmployeeInterface {
     id: number;
     firstName: string;
@@ -7,4 +10,9 @@ export interface EmployeeInterface {
     email: string;
     hiredFrom: string
     firedFrom: string | null
+}
+
+export interface EmployeeWithRelationsInterface extends EmployeeInterface {
+    rank: RankInterface;
+    branch: BranchInterface;
 }

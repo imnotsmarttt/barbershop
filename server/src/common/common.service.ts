@@ -3,9 +3,6 @@ import {SplitDatetimeDto} from "./common.dto";
 
 @Injectable()
 export class CommonService {
-    constructor() {
-    }
-
 
     // returns time from datetime
     getTimeFromDatetime(date: string): string {

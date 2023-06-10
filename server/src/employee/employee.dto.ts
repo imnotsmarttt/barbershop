@@ -1,5 +1,5 @@
 import {IsDateString, IsEmail, IsNotEmpty, IsNumberString, IsOptional, IsString} from "class-validator";
-import {BranchDto} from "../branch/branchDto";
+import {BranchDto} from "../branch/branch.dto";
 import {RankDto} from "../rank/rank.dto";
 import {ServiceDto, ServiceWithRankDto} from "../services/services.dto";
 
@@ -62,4 +62,10 @@ export interface EmployeeDto {
 export interface EmployeeFreeTime {
     start: string // date string
     availableServices: ServiceWithRankDto[]
+}
+
+export interface FindAllEmployeeResult {
+    employeeList: EmployeeDto[];
+    itemCount: number;
+    pageSize: number;
 }

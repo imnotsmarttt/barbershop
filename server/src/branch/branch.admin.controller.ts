@@ -1,6 +1,6 @@
-import {Body, Controller, Delete, Get, HttpStatus, Param, Post, Put, UseGuards} from '@nestjs/common';
+import {Body, Controller, Delete, Get, HttpStatus, Param, Post, Put, Query, UseGuards} from '@nestjs/common';
 import {BranchService} from "./branch.service";
-import {CreateOrUpdateBranchDto} from "./branchDto";
+import {CreateOrUpdateBranchDto} from "./branch.dto";
 import {RolesGuard} from "../role/roles.guard";
 import {JwtAccessGuard} from "../auth/guards/jwt-access.guard";
 import {Roles} from "../role/role.decorator";
@@ -12,6 +12,12 @@ export class BranchAdminController {
     constructor(
         private readonly branchService: BranchService
     ) {}
+
+    @Roles(RoleEnum.admin)
+    @Get()
+    async findAll(@Query() query) {
+        return await this.branchService.findAll(query)
+    }
 
     @Roles(RoleEnum.admin)
     @Post()
