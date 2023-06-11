@@ -9,7 +9,7 @@ export type AdminVisitsStateType = {
     error: string;
 }
 
-export type AdminVisitsFetchResult = {
+export type AdminVisitsFetchResultType = {
     visitList: VisitInterface[];
     visitCount: number;
     pageSize: number;

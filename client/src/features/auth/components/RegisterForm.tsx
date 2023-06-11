@@ -8,9 +8,10 @@ import {useAppDispatch} from "hooks/store";
 import {useSelector} from "react-redux";
 import {RootStateType} from "types/store/store";
 
-import {Alert, Button, Grid, TextField} from "@mui/material";
+import {Alert, Button, Grid} from "@mui/material";
 import Loader from "components/Loader/Loader";
 import {SubmitHandler, useForm} from "react-hook-form";
+import Input from "components/Form/Input/Input";
 
 type Inputs = {
     username: string;
@@ -37,73 +38,67 @@ function RegisterForm() {
         }))
     }
 
-    return fetching === 'pending' ? <Loader/> : <Grid container className='container'>
-        <Grid item container className={s.wrapper}>
-            <form onSubmit={handleSubmit(handleRegister)} className={s.form}>
-                <h1 className={s.form__item}>Реєстрація</h1>
-                {error && <Alert
-                    severity="error"
-                    className={s.form__item}
-                >{error}</Alert>}
+    if (fetching === 'pending') {
+        return <Loader/>
+    }
 
-                <div className={s.form__item}>
-                    <TextField
-                        id="username"
-                        label="Ім'я користувача"
-                        variant="standard"
-                        className={s.form__input}
-                        {...register('username', {
-                            required: `Обов'язкове поле`
+    return (
+        <Grid container className='container'>
+            <Grid item container className={s.auth}>
+                <form onSubmit={handleSubmit(handleRegister)} className={s.auth_form}>
+                    <h1 className='form_item'>Реєстрація</h1>
+                    {error && <Alert severity="error" className={s.form__item}>{error}</Alert>}
+
+                    <Input
+                        id='username'
+                        label={`Ім'я користувача`}
+                        register={register('username', {
+                            required: `Обов'язкове поле`,
+                            minLength: {
+                                value: 4,
+                                message: 'Мінімальна давжина поля 4 символа'
+                            }
                         })}
+                        error={errors.username?.message}
                     />
-                    {errors?.username && <p className='error_text'>{errors.username.message}</p>}
-                </div>
 
-                <div className={s.form__item}>
-                    <TextField
-                        id="password"
+                    <Input
+                        id='password'
+                        register={register('password', {
+                            required: `Обов'язкове поле`,
+                            minLength: {
+                                value: 6,
+                                message: 'Мінімальна давжина поля 6 символів'
+                            }
+                        })}
                         label="Пароль"
-                        variant="standard"
                         type='password'
-                        className={s.form__input}
-                        {...register('password', {
+                        error={errors.password?.message}
+                    />
+
+                    <Input
+                        id='password2'
+                        register={register('password2', {
                             required: `Обов'язкове поле`,
                             minLength: {
                                 value: 7,
                                 message: 'Мінімальна довжина пароля 7 символів'
                             }
                         })}
-                    />
-                    {errors?.password && <p className='error_text'>{errors.password.message}</p>}
-                </div>
-
-                <div className={s.form__item}>
-                    <TextField
-                        id="password2"
                         label="Повторіть пароль"
-                        variant="standard"
                         type='password'
-                        className={s.form__input}
-                        {...register('password2', {
-                            required: `Обов'язкове поле`,
-                            minLength: {
-                                value: 7,
-                                message: 'Мінімальна довжина пароля 7 символів'
-                            }
-                        })}
+                        error={errors.password2?.message}
                     />
-                    {errors?.password2 && <p className='error_text'>{errors.password2.message}</p>}
-                </div>
 
+                    <p className='form_item text'>
+                        Зареєстровані? <NavLink to='/a/login'>Вхід</NavLink>
+                    </p>
+                    <Button variant="outlined" type='submit' className='form_item'>Зареєструватися</Button>
 
-                <p className={`${s.form__item} text`}>
-                    Зареєстровані? <NavLink to='/a/login'>Вхід</NavLink>
-                </p>
-                <Button variant="outlined" type='submit' className={s.form__item}>Зареєструватися</Button>
-
-            </form>
+                </form>
+            </Grid>
         </Grid>
-    </Grid>
+    )
 }
 
 export default RegisterForm

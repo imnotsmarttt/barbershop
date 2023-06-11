@@ -2,7 +2,6 @@ import AdminTable from "./AdminTable/AdminTable";
 import {Grid} from "@mui/material";
 import s from './Admin.module.css'
 import AdminStatistic from "./AdminStatistic/AdminStatistic";
-import AdminHeader from "./AdminHeader/AdminHeader";
 
 type PropsType = {
     headerTitles: string[]
@@ -13,8 +12,7 @@ type PropsType = {
 
 function AdminMainContent(props: PropsType) {
     return (
-        <Grid container item xs={10} className={s.main}>
-            <AdminHeader/>
+        <Grid className={s.main}>
             <AdminStatistic/>
             <AdminTable
                 rows={props.rows}

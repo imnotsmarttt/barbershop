@@ -40,6 +40,7 @@ const adminServicesSlice = createSlice({
 
 export default adminServicesSlice.reducer
 
+// actions
 export const fetchServiceList = createAsyncThunk<AdminServicesFetchResult,
     { query: string },
     { rejectValue: string }>(

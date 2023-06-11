@@ -1,13 +1,14 @@
-import {useEffect} from "react";
-import {NavLink} from "react-router-dom";
-import {Alert, Button, Grid, TextField} from "@mui/material";
-import Loader from "components/Loader/Loader";
-
 import s from './Auth.module.css'
+
+import {NavLink} from "react-router-dom";
+import {Alert, Button, Grid} from "@mui/material";
+import Loader from "components/Loader/Loader";
+import Input from "components/Form/Input/Input";
 
 import {login, setError} from "store/slices/auth";
 import {useAppDispatch} from "hooks/store";
 import {useSelector} from "react-redux";
+import {useEffect} from "react";
 import {RootStateType} from "types/store/store";
 import {SubmitHandler, useForm} from "react-hook-form";
 
@@ -39,45 +40,32 @@ function LoginForm() {
 
     return (
         <Grid container className='container'>
-            <Grid item container className={s.wrapper}>
-                <form onSubmit={handleSubmit(handleLogin)} className={s.form}>
-                    <h1 className={s.form__item}>Вхід</h1>
-                    {error && <Alert
-                        severity="error"
-                        className={s.form__item}
-                    >{error}</Alert>}
+            <Grid item container className={s.auth}>
+                <form onSubmit={handleSubmit(handleLogin)} className={s.auth_form}>
+                    <h1 className='form_item'>Вхід</h1>
+                    {error && <Alert severity="error" className={s.form__item}>{error}</Alert>}
 
-                    <div className={s.form__item}>
-                        <TextField
-                            id="username"
-                            label="Ім'я користувача"
-                            variant="standard"
-                            className={s.form__input}
-                            {...register('username', {
-                                required: `Обов'язкове поле`
-                            })}
-                        />
-                        {errors?.username && <p className='error_text'>{errors.username.message}</p>}
-                    </div>
-
-                    <div className={s.form__item}>
-                        <TextField
-                            id="password"
-                            label="Пароль"
-                            variant="standard"
-                            type='password'
-                            className={s.form__input}
-                            {...register('password', {
-                                required: `Обов'язкове поле`,
-                            })}
-                        />
-                        {errors?.password && <p className='error_text'>{errors.password.message}</p>}
-                    </div>
-
-                    <p className={`${s.form__item} text`}>
+                    <Input
+                        id='username'
+                        label={`Ім'я користувача`}
+                        register={register('username', {
+                            required: `Обов'язкове поле`
+                        })}
+                        error={errors.username?.message}
+                    />
+                    <Input
+                        id='password'
+                        register={register('password', {
+                            required: `Обов'язкове поле`,
+                        })}
+                        label="Пароль"
+                        type='password'
+                        error={errors.password?.message}
+                    />
+                    <p className='form_item text'>
                         Не зареєстровані? <NavLink to='/a/register'>Зареєструватися</NavLink>
                     </p>
-                    <Button variant="outlined" type='submit' className={s.form__item}>Увійти</Button>
+                    <Button variant="outlined" type='submit' className='form_item'>Увійти</Button>
 
                 </form>
             </Grid>

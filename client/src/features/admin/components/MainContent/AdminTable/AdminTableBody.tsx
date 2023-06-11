@@ -56,7 +56,7 @@ function AdminTableBody(props: Props) {
                 </Table>
             </TableContainer>
 
-            {props.pageSize <= props.rowsCount && <TablePagination rowsCount={props.rowsCount} pageSize={props.pageSize}/>}
+            {(props.pageSize <= props.rowsCount && props.rowsCount !== 0) && <TablePagination rowsCount={props.rowsCount} pageSize={props.pageSize}/>}
         </Grid>
     )
 }

@@ -1,15 +1,9 @@
-/*ADMIN MAIN CONTENT*/
 .main {
+
+    width: 100%!important;
+}
+
+.main__container {
     padding: 40px 32px;
     align-content: start;
 }
-
-/*NAVIGATION*/
-
-
-/*STATISTIC*/
-
-
-/*TABLE*/
-
-

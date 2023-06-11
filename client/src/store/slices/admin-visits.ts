@@ -1,4 +1,4 @@
-import {AdminVisitsFetchResult, AdminVisitsStateType} from "types/store/admin-visits";
+import {AdminVisitsFetchResultType, AdminVisitsStateType} from "types/store/admin-visits";
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import {axiosInstance, getError} from "lib/axios";
 import {AxiosError} from "axios";
@@ -38,8 +38,9 @@ const adminVisitsSlice = createSlice({
 })
 
 export default adminVisitsSlice.reducer
+
 // actions
-export const fetchVisitList = createAsyncThunk<AdminVisitsFetchResult,
+export const fetchVisitList = createAsyncThunk<AdminVisitsFetchResultType,
     { query: string }, { rejectValue: string }>(
     'admin/fetchVisitList',
     async (payload, thunkAPI) => {
@@ -50,7 +51,7 @@ export const fetchVisitList = createAsyncThunk<AdminVisitsFetchResult,
                 }
             }
             const response = await axiosInstance.get(`admin/visits?${payload.query}`, config)
-            return {...response.data} as AdminVisitsStateType
+            return {...response.data} as AdminVisitsFetchResultType
         } catch (e) {
             const error = e as AxiosError || Error
             return thunkAPI.rejectWithValue(getError(error))

@@ -39,6 +39,7 @@ const adminBranchSlice = createSlice({
 })
 
 export default adminBranchSlice.reducer
+
 // actions
 export const fetchBranchList = createAsyncThunk<AdminBranchFetchResultType,
     { query: string },
