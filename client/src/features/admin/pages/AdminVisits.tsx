@@ -3,7 +3,7 @@ import {useSelector} from "react-redux";
 import {RootStateType} from "types/store/store";
 import {useEffect} from "react";
 import {useAppDispatch} from "hooks/store";
-import {fetchVisitList} from "store/slices/admin";
+import {fetchVisitList} from "store/slices/admin-visits";
 import {useSearchParams} from "react-router-dom";
 import {dateTimeFormatInstance} from "lib/intl";
 

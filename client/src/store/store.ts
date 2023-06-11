@@ -1,12 +1,23 @@
-import { configureStore } from '@reduxjs/toolkit'
+import {combineReducers, configureStore} from '@reduxjs/toolkit'
 
 import AuthReducer from './slices/auth'
-import AdminReducer from './slices/admin'
+import AdminVisitsReducer from './slices/admin-visits'
+import AdminServicesReducer from './slices/admin-services'
+import AdminEmployeeReducer from './slices/admin-employee'
+import AdminBranchReducer from './slices/admin-branch'
+
+const adminReducers = combineReducers({
+    visits: AdminVisitsReducer,
+    services: AdminServicesReducer,
+    employee: AdminEmployeeReducer,
+    branch: AdminBranchReducer
+})
+
 
 const store = configureStore({
     reducer: {
         auth: AuthReducer,
-        admin: AdminReducer
+        admin: adminReducers
     }
 })
 

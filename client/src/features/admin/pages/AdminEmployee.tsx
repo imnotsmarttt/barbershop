@@ -2,7 +2,7 @@ import AdminMainContent from "../components/MainContent/AdminMainContent";
 import {useAppDispatch} from "hooks/store";
 import {useEffect} from "react";
 import {useSearchParams} from "react-router-dom";
-import {fetchEmployeeList} from "store/slices/admin";
+import {fetchEmployeeList} from "store/slices/admin-employee";
 import {useSelector} from "react-redux";
 import {RootStateType} from "types/store/store";
 import {dateFormatInstance} from "lib/intl";
