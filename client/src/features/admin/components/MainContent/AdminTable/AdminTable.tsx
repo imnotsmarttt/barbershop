@@ -3,25 +3,35 @@ import AdminTableHeader from "./AdminTableHeader";
 import AdminTableBody from "./AdminTableBody";
 
 import s from './AdminTable.module.css'
+import {ActionCreatorWithPayload} from "@reduxjs/toolkit";
 
+
+export type TableRowType = {
+    id: number;
+    [key: string]: string | number
+}
 
 type PropsType = {
     headerTitles: string[];
-    rows: object[];
-    rowsCount: number;
+    rows: TableRowType[];
+    itemCount: number;
     pageSize: number
 
+    toggleDeleteModal: ActionCreatorWithPayload<{ id?: number }>
+
+    tableTitle: string;
 }
 
 function AdminTable(props: PropsType) {
     return (
         <Grid container item xs={12} className={s.table}>
-            <AdminTableHeader  />
+            <AdminTableHeader tableTitle={props.tableTitle}  />
             <AdminTableBody
                 rows={props.rows}
                 headerTitles={props.headerTitles}
-                rowsCount={props.rowsCount}
+                itemCount={props.itemCount}
                 pageSize={props.pageSize}
+                toggleDeleteModal={props.toggleDeleteModal}
             />
         </Grid>
     )

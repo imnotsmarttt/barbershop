@@ -2,7 +2,9 @@
     height: fit-content;
 }
 /*TABLE HEADER*/
-.table_header__right_item {
+
+/*FILTER*/
+.table_header__filter_section {
     justify-content: space-between;
 }
 
@@ -44,6 +46,15 @@
     background: #FAFAFA;
 }
 
+/*CREATE*/
+.table_header__create_section {
+    justify-content: flex-start;
+}
+.create_button {
+    padding: 0!important;
+    width: fit-content!important;
+}
+
 /*TABLE BODY*/
 .table_body {
     margin-top: 30px;
@@ -62,6 +73,16 @@
 .cell {
     padding: 12px 24px!important;
     border-bottom: none!important;
+}
+.cell__delete_button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #f44336;
+    transition: all 0.2s;
+}
+.cell__delete_button:hover {
+    opacity: .6;
 }
 
 /*TABLE_PAGINATION*/

@@ -8,31 +8,45 @@ import {
     TableHead,
     TableRow,
 } from "@mui/material";
+import DeleteIcon from '@mui/icons-material/Delete';
 
 import s from './AdminTable.module.css'
 
 import TablePagination from "./TablePagination";
+import {ActionCreatorWithPayload} from "@reduxjs/toolkit";
+import {useAppDispatch} from "hooks/store";
+import {TableRowType} from "./AdminTable";
+
 
 type Props = {
     headerTitles: string[];
-    rows: object[];
+    rows: TableRowType[];
 
-    rowsCount: number;
+    itemCount: number;
     pageSize: number
+
+    toggleDeleteModal: ActionCreatorWithPayload<{ id?: number }>
 }
 
 
 function AdminTableBody(props: Props) {
-    const {rows, headerTitles} = props
+    const {rows, headerTitles, itemCount, pageSize, toggleDeleteModal} = props
+    const dispatch = useAppDispatch()
 
+    // generate html rows for table
     const tableBodyRows = rows.map(row => {
-        const cells = []
-        for (const value of Object.values(row)) {
-            cells.push(value)
-        }
+        const cells = Object.values(row)
+
         return (
             <TableRow className={s._row} key={cells[0]}>
                 {cells.map(cell => <TableCell className={s.cell} key={cell}>{cell}</TableCell>)}
+                <button
+                    className={`${s.cell__delete_button} ${s.cell}`}
+                    onClick={() => {
+                        dispatch(toggleDeleteModal({id: row.id}))
+                    }}>
+                    <DeleteIcon/>
+                </button>
             </TableRow>
         )
     })
@@ -55,8 +69,11 @@ function AdminTableBody(props: Props) {
                     </TableBody>
                 </Table>
             </TableContainer>
-
-            {(props.pageSize <= props.rowsCount && props.rowsCount !== 0) && <TablePagination rowsCount={props.rowsCount} pageSize={props.pageSize}/>}
+            {!tableBodyRows.length && <p className='text text_center'>Нічого не знайдено</p>}
+            {
+                (pageSize <= itemCount && itemCount !== 0) &&
+                <TablePagination rowsCount={itemCount} pageSize={pageSize}/>
+            }
         </Grid>
     )
 }

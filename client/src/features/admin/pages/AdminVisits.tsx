@@ -3,9 +3,10 @@ import {useSelector} from "react-redux";
 import {RootStateType} from "types/store/store";
 import {useEffect} from "react";
 import {useAppDispatch} from "hooks/store";
-import {fetchVisitList} from "store/slices/admin-visits";
+import {fetchVisitList, toggleVisitsDeleteModal, deleteVisit} from "store/slices/admin-visits";
 import {useSearchParams} from "react-router-dom";
 import {dateTimeFormatInstance} from "lib/intl";
+import DeleteModal from "../../../components/Modal/DeleteModal";
 
 function AdminVisits() {
     const [searchParams] = useSearchParams()
@@ -16,10 +17,8 @@ function AdminVisits() {
 
     const {visitList, pageSize, visitCount} = useSelector((state: RootStateType) => state.admin.visits)
 
-    // titles for table header
-    const headerTitles = ['ID', 'ПІБ', 'Телефон', 'Початок', 'Працівник', 'Послуга', 'Ціна', 'Статус']
+    const headerTitles = ['ID', 'ПІБ', 'Телефон', 'Початок', 'Працівник', 'Послуга', 'Ціна', 'Статус', '']
 
-    // generate rows for table
     const rows = visitList.map(visit => {
         const {id, fullName, phoneNumber, startDate, status} = visit
         const date = new Date(startDate)
@@ -27,20 +26,33 @@ function AdminVisits() {
         return {
             id, fullName, phoneNumber,
             startDate: dateTimeFormatInstance.format(date),
-            employee: `${visit.employee.firstName} ${visit.employee.lastName}`,
+            employee: visit.employee ? `${visit.employee.firstName} ${visit.employee.lastName}` : '-',
             service: visit.service.service,
             price: `${visit.service.price}₴`,
-            status: status === 'NOT_STARTED' && 'Очікування'
+            status: status
         }
     })
 
+    const {isActive, id} = useSelector((state: RootStateType) => state.admin.visits.deleteModal)
+
     return (
-        <AdminMainContent
-            headerTitles={headerTitles}
-            rows={rows}
-            rowsCount={visitCount}
-            pageSize={pageSize}
-        />
+        <>
+            <DeleteModal
+                isActive={isActive}
+                toggleModal={toggleVisitsDeleteModal}
+                deleteFunction={deleteVisit}
+                id={id}
+            />
+            <AdminMainContent
+                tableTitle='Записи'
+
+                headerTitles={headerTitles}
+                rows={rows}
+                rowsCount={visitCount}
+                pageSize={pageSize}
+                toggleDeleteModal={toggleVisitsDeleteModal}
+            />
+        </>
     )
 }
 
