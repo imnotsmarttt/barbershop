@@ -72,8 +72,9 @@ export class EmployeeService {
     async delete(id: number) {
         const deleteResult = await this.employeeRepository.createQueryBuilder('employee')
             .delete()
-            .where('id - :id', {id})
+            .where('employee.id = :id', {id})
             .execute()
+
         if (deleteResult.affected === 0) {
             throw new HttpException('Працівника не знайдено', HttpStatus.NOT_FOUND) // employee not found
         }
@@ -109,6 +110,7 @@ export class EmployeeService {
         const page: number = query.page || 1
         const take: number = query.take || 10
         const skip: number = (page - 1) * take
+
         const employeeQueryBuilder = await this.employeeRepository.createQueryBuilder('employee')
             .leftJoinAndSelect('employee.rank', 'rank')
             .leftJoinAndSelect('employee.branch', 'branch')

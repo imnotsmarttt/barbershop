@@ -27,7 +27,7 @@ export class Visit {
     status: VisitStatusEnumDto
 
     // employee
-    @ManyToOne(() => Employee, (employee) => employee.visits, {nullable: false})
+    @ManyToOne(() => Employee, (employee) => employee.visits, {onDelete: "SET NULL"})
     employee: Employee
 
     // service

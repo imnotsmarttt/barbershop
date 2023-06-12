@@ -50,7 +50,7 @@ export class Employee {
     @OneToOne(() => User, (user) => user.employee)
     user: User
 
-    @OneToMany(() => Visit, (visit) => visit.employee, {onDelete: "CASCADE"})
+    @OneToMany(() => Visit, (visit) => visit.employee, )
     visits: Visit[]
 }
 
