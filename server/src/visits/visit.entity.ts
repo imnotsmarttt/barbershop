@@ -1,7 +1,7 @@
 import {Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn} from "typeorm";
 import {Employee} from "../employee/employee.entity";
 import {Service} from "../services/services.entity";
-import {VisitStatusEnumDto} from "./visit.dto";
+import {VisitStatusEnumDto} from "./interfaces/visit.dto";
 
 @Entity()
 export class Visit {

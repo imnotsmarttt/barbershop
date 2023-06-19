@@ -16,3 +16,17 @@ export type AdminEmployeeFetchResultType = {
     itemCount: number;
     pageSize: number;
 }
+
+export interface AdminEmployeeCreateResultType extends EmployeeWithRelationsInterface {}
+
+export type AdminEmployeeCreatePayloadType = {
+    firstName: string;
+    lastName: string;
+    phoneNumber: string;
+    email: string;
+    hiredFrom: string;
+    branchId: string;
+    rankId: string;
+    userId?: string;
+    photo?: File;
+}

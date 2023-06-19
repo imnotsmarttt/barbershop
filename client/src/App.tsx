@@ -15,7 +15,7 @@ import AdminBranch from "features/admin/pages/AdminBranch";
 
 import {useAppDispatch} from "hooks/store";
 import {refreshTokensThunk} from "store/slices/auth";
-
+import AdminEmployeeForm from "./features/admin/pages/AdminEmployeeForm";
 
 
 function App() {
@@ -47,10 +47,22 @@ function App() {
                         <Route path='register' element={<RegisterForm/>}/>
                     </Route>
                     <Route path='admin' element={<AuthComponent children={<Admin/>}/>}>
-                        <Route path='visits' element={<AdminVisits/>}/>
-                        <Route path='employee' element={<AdminEmployee/>}/>
-                        <Route path='services' element={<AdminServices/>}/>
-                        <Route path='branch' element={<AdminBranch/>}/>
+                        <Route path='visits'>
+                            <Route path='' element={<AdminVisits/>}/>
+                        </Route>
+
+                        <Route path='employee'>
+                            <Route path='' element={<AdminEmployee/>}/>
+                            <Route path='create' element={<AdminEmployeeForm/>}/>
+                        </Route>
+
+                        <Route path='services'>
+                            <Route path='' element={<AdminServices/>}/>
+                        </Route>
+
+                        <Route path='branch'>
+                            <Route path='' element={<AdminBranch/>}/>
+                        </Route>
                     </Route>
 
 

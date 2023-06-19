@@ -1,5 +1,9 @@
 import {createAsyncThunk, createSlice, PayloadAction} from "@reduxjs/toolkit";
-import {AdminEmployeeFetchResultType, AdminEmployeeStateType} from "types/store/admin-employee";
+import {
+    AdminEmployeeCreatePayloadType, AdminEmployeeCreateResultType,
+    AdminEmployeeFetchResultType,
+    AdminEmployeeStateType
+} from "types/store/admin-employee";
 import {axiosInstance, getError} from "lib/axios";
 import {AxiosError} from "axios";
 
@@ -61,6 +65,20 @@ const adminEmployeeSlice = createSlice({
                 state.error = action.payload ? action.payload : "Помилка"
                 state.fetching = 'succeeded'
             })
+            // create
+            .addCase(createEmployee.pending, (state) => {
+                state.error = ''
+                state.fetching = 'pending'
+            })
+            .addCase(createEmployee.fulfilled, (state, action) => {
+                state.employeeList.push(action.payload)
+                state.itemCount += 1
+                state.fetching = 'succeeded'
+            })
+            .addCase(createEmployee.rejected, (state, action) => {
+                state.error = action.payload ? action.payload : "Помилка"
+                state.fetching = 'succeeded'
+            })
     }
 })
 
@@ -74,6 +92,7 @@ export const fetchEmployeeList = createAsyncThunk<AdminEmployeeFetchResultType,
     { rejectValue: string }>(
     'adminEmployee/fetch',
     async (payload, thunkAPI) => {
+        debugger
         try {
             const config = {
                 headers: {
@@ -82,6 +101,32 @@ export const fetchEmployeeList = createAsyncThunk<AdminEmployeeFetchResultType,
             }
             const response = await axiosInstance.get(`admin/employee?${payload.query}`, config)
             return response.data as AdminEmployeeFetchResultType
+        } catch (e) {
+            const error = e as AxiosError || Error
+            return thunkAPI.rejectWithValue(getError(error))
+        }
+    }
+)
+
+export const createEmployee = createAsyncThunk<AdminEmployeeCreateResultType,
+    AdminEmployeeCreatePayloadType,
+    { rejectValue: string }>(
+    'adminEmployee/create',
+    async (payload, thunkAPI) => {
+        try {
+            const config = {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+                }
+            }
+
+            const formData = new FormData()
+            for (const [key, value] of Object.entries(payload)) {
+                formData.append(key, value)
+            }
+
+            const response = await axiosInstance.post(`admin/employee`, formData, config)
+            return response.data as AdminEmployeeCreateResultType
         } catch (e) {
             const error = e as AxiosError || Error
             return thunkAPI.rejectWithValue(getError(error))
