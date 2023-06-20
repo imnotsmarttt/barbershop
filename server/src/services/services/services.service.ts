@@ -7,8 +7,8 @@ import {Service} from "services/services.entity";
 import {RankService} from "rank/services/rank.service";
 
 import {CreateOrUpdateServicesDto} from "services/interfaces/services.dto";
-import {FindAllServicesResultInterface} from "services/interfaces/service.interface";
-import {FindOneQueryDto} from "common/common.dto";
+import {IFindAllServicesResult} from "services/interfaces/service.interface";
+import {IFindOneQuery} from "common/common.interface";
 
 import {unlink} from "fs/promises";
 
@@ -21,7 +21,7 @@ export class ServicesService {
     ) {
     }
 
-    async findAll(query): Promise<FindAllServicesResultInterface> {
+    async findAll(query): Promise<IFindAllServicesResult> {
         const page: number = query.page || 1
         const take: number = query.take || 10
         const skip: number = (page - 1) * take
@@ -87,7 +87,7 @@ export class ServicesService {
         }
     }
 
-    async findOne(query: FindOneQueryDto): Promise<Service> {
+    async findOne(query: IFindOneQuery): Promise<Service> {
         const service = await this.serviceRepository.findOneBy(query)
         if (!service) {
             throw new HttpException('Послугу не знайдено', HttpStatus.NOT_FOUND) // service not found

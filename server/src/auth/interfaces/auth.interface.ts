@@ -1,15 +1,15 @@
-import {CleanUserInterface} from "users/interfaces/users.dto";
+import {ICleanUser} from "users/interfaces/users.interface";
 
-export interface TokensInterface {
+export interface ITokens {
     accessToken: string;
     refreshToken: string
 }
 
-export interface AuthFinishedInterface extends TokensInterface{
-    user: CleanUserInterface
+export interface IAuthFinished extends ITokens{
+    user: ICleanUser
 }
 
-export interface JwtUserInterface {
+export interface IJwtUser {
     id: number;
     username: string;
     role: string;

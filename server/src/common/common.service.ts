@@ -1,5 +1,5 @@
 import {Injectable} from '@nestjs/common';
-import {SplitDatetimeDto} from "./common.dto";
+import {ISplitDatetime} from "./common.interface";
 
 @Injectable()
 export class CommonService {
@@ -27,7 +27,7 @@ export class CommonService {
     }
 
     // return object with date and time
-    getDateAndTimeFromDatetime(date: string): SplitDatetimeDto {
+    getDateAndTimeFromDatetime(date: string): ISplitDatetime {
         return {
             date: this.getDateFromDatetime(date),
             time: this.getTimeFromDatetime(date)

@@ -1,11 +1,11 @@
 import {HttpException, HttpStatus, Injectable} from '@nestjs/common';
 
 import {RegisterBodyDto} from "auth/interfaces/auth.dto";
-import {AuthFinishedInterface} from "auth/interfaces/auth.interface";
+import {IAuthFinished} from "auth/interfaces/auth.interface";
 import * as bcrypt from 'bcrypt'
 
 import {UsersService} from "users/services/users.service";
-import {CleanUserInterface} from "users/interfaces/users.dto";
+import {ICleanUser} from "users/interfaces/users.interface";
 import {AuthHelperService} from "./auth.helper.service";
 
 
@@ -18,7 +18,7 @@ export class AuthService {
     }
 
     // controller utils
-    async register(data: RegisterBodyDto): Promise<AuthFinishedInterface> {
+    async register(data: RegisterBodyDto): Promise<IAuthFinished> {
         const {username, password, password2} = data
         const userExist = await this.usersService.findOne({username})
         if (userExist) {
@@ -38,7 +38,7 @@ export class AuthService {
         }
     }
 
-    async login(data: CleanUserInterface): Promise<AuthFinishedInterface> {
+    async login(data: ICleanUser): Promise<IAuthFinished> {
         const tokens = await this.authHelperService.generateTokens(data)
         await this.authHelperService.updateRefreshToken(data.id, tokens.refreshToken)
 
@@ -48,11 +48,11 @@ export class AuthService {
         }
     }
 
-    async logout(userId: number): Promise<CleanUserInterface> {
+    async logout(userId: number): Promise<ICleanUser> {
         return await this.usersService.update(userId, {refreshToken: null})
     }
 
-    async refreshTokens(userId: number, token: string): Promise<AuthFinishedInterface> {
+    async refreshTokens(userId: number, token: string): Promise<IAuthFinished> {
         const user = await this.usersService.findOne({id: userId})
         if (!user || !user.refreshToken) {
             throw new HttpException('Дозвіл заборонено', HttpStatus.UNAUTHORIZED) // Access denied

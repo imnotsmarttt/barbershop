@@ -3,8 +3,8 @@ import {Repository} from "typeorm";
 import {Branch} from "../branch.entity";
 import {InjectRepository} from "@nestjs/typeorm";
 import {CreateOrUpdateBranchBodyDto} from "../interfaces/branch.dto";
-import {FindOneQueryDto} from "../../common/common.dto";
-import {FindAllBranchResultInterface} from "../interfaces/branch.inteface";
+import {IFindOneQuery} from "../../common/common.interface";
+import {IFindAllBranchResult} from "../interfaces/branch.inteface";
 
 @Injectable()
 export class BranchService {
@@ -30,7 +30,7 @@ export class BranchService {
         }
     }
 
-    async findOne(query: FindOneQueryDto): Promise<Branch> {
+    async findOne(query: IFindOneQuery): Promise<Branch> {
         const branch = await this.branchRepository.findOneBy(query)
         if (!branch) {
             throw new HttpException('Філіал не знайдено', HttpStatus.NOT_FOUND) // branch not found
@@ -48,7 +48,7 @@ export class BranchService {
         return branch
     }
 
-    async findAll(query): Promise<FindAllBranchResultInterface> {
+    async findAll(query): Promise<IFindAllBranchResult> {
         const page: number = query.page || 1
         const take: number = query.take || 10
         const skip: number = (page - 1) * take

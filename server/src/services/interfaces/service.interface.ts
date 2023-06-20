@@ -1,6 +1,6 @@
-import {RankInterface} from "rank/interfaces/rank.interface";
+import {IRank} from "rank/interfaces/rank.interface";
 
-export interface ServiceInterface {
+export interface IService {
     id: number
     service: string
     price: number
@@ -8,12 +8,12 @@ export interface ServiceInterface {
     photoUrl: string
 }
 
-export interface ServiceWithRankInterface extends ServiceInterface {
-    rank: RankInterface
+export interface IServiceWithRank extends IService {
+    rank: IRank
 }
 
-export interface FindAllServicesResultInterface {
-    serviceList: ServiceWithRankInterface[];
+export interface IFindAllServicesResult {
+    serviceList: IServiceWithRank[];
     itemCount: number;
     pageSize: number;
 }

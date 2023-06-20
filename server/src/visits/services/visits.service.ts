@@ -5,7 +5,7 @@ import {Repository} from "typeorm";
 import {CreateOrUpdateVisitDto, GetAllVisitsResultDto} from "../interfaces/visit.dto";
 import {EmployeeService} from "employee/services/employee.service";
 import {ServicesService} from "services/services/services.service";
-import {FindOneQueryDto} from "common/common.dto";
+import {IFindOneQuery} from "common/common.interface";
 import {Service} from "services/services.entity";
 import {CommonService} from "common/common.service";
 import {EmployeeHelperService} from "employee/services/employee.helper.service";
@@ -128,7 +128,7 @@ export class VisitsService {
         }
     }
 
-    async findOne(query: FindOneQueryDto): Promise<Visit> {
+    async findOne(query: IFindOneQuery): Promise<Visit> {
         const visit = await this.visitRepository.findOne({
             where: query,
             relations: ['employee', 'service']

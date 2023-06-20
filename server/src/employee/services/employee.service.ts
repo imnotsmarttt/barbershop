@@ -3,11 +3,11 @@ import {Repository} from "typeorm";
 import {Employee} from "../employee.entity";
 import {InjectRepository} from "@nestjs/typeorm";
 import {CreateOrUpdateEmployeeDto} from "employee/interfaces/employee.dto";
-import {EmployeeInterface, FindAllEmployeeResult} from "employee/interfaces/employee.interface";
+import {IEmployee, IFindAllEmployeeResult} from "employee/interfaces/IEmployee";
 import {BranchService} from "branch/services/branch.service";
 import {RankService} from "rank/services/rank.service";
 import {UsersService} from "users/services/users.service";
-import {FindOneQueryDto} from "common/common.dto";
+import {IFindOneQuery} from "common/common.interface";
 import {unlink} from "fs/promises";
 import {VisitsService} from "visits/services/visits.service";
 import {ServicesService} from "services/services/services.service";
@@ -28,7 +28,7 @@ export class EmployeeService {
     ) {
     }
 
-    async create(data: CreateOrUpdateEmployeeDto, photo: Express.Multer.File | undefined): Promise<EmployeeInterface> {
+    async create(data: CreateOrUpdateEmployeeDto, photo: Express.Multer.File | undefined): Promise<IEmployee> {
         const {
             firstName, lastName,
             phoneNumber, email,
@@ -57,7 +57,7 @@ export class EmployeeService {
         return response
     }
 
-    async findOne(query: FindOneQueryDto): Promise<Employee> {
+    async findOne(query: IFindOneQuery): Promise<Employee> {
         const employee = await this.employeeRepository.findOne({
             where: query,
             relations: ['rank', 'branch']
@@ -105,7 +105,7 @@ export class EmployeeService {
         return employee
     }
 
-    async findAll(query): Promise<FindAllEmployeeResult> {
+    async findAll(query): Promise<IFindAllEmployeeResult> {
         const page: number = query.page || 1
         const take: number = query.take || 10
         const skip: number = (page - 1) * take

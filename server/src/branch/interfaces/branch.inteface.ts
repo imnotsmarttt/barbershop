@@ -1,4 +1,4 @@
-export interface BranchInterface {
+export interface IBranch {
     id: number
     name: string
     city: string
@@ -7,8 +7,8 @@ export interface BranchInterface {
     closeAt: string
 }
 
-export interface FindAllBranchResultInterface {
-    branchList: BranchInterface[];
+export interface IFindAllBranchResult {
+    branchList: IBranch[];
     itemCount: number;
     pageSize: number;
 }

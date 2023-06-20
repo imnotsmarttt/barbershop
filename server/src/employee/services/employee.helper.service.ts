@@ -2,12 +2,12 @@ import {forwardRef, Inject, Injectable} from '@nestjs/common';
 import {Repository} from "typeorm";
 import {Employee} from "employee/employee.entity";
 import {InjectRepository} from "@nestjs/typeorm";
-import {EmployeeFreeTimeInterface} from "employee/interfaces/employee.interface";
+import {IEmployeeFreeTime} from "employee/interfaces/IEmployee";
 import {VisitsService} from "visits/services/visits.service";
 import {Visit} from "visits/visit.entity";
 import {ServicesService} from "services/services/services.service";
 import {CommonService} from "common/common.service";
-import {ServiceWithRankInterface} from "../../services/interfaces/service.interface";
+import {IServiceWithRank} from "../../services/interfaces/service.interface";
 
 @Injectable()
 export class EmployeeHelperService {
@@ -52,7 +52,7 @@ export class EmployeeHelperService {
     }
 
     // returns an array of utils which going to end before next visit going to start
-    async getAvailableServicesByTime(employeeVisits: Visit[], time: string, openAt: string, closeAt: string, employeeRankId: number): Promise<ServiceWithRankInterface[]> {
+    async getAvailableServicesByTime(employeeVisits: Visit[], time: string, openAt: string, closeAt: string, employeeRankId: number): Promise<IServiceWithRank[]> {
         const nextVisitDate: string | undefined = employeeVisits.filter((visit) => {
             if (visit.startDate) {
                 const visitStartString = this.commonService.getTimeFromDatetime(visit.startDate)
@@ -73,13 +73,13 @@ export class EmployeeHelperService {
     }
 
     // get visits & available utils by free time of employee
-    async getVisits(id: number, date: string): Promise<EmployeeFreeTimeInterface[]> {
+    async getVisits(id: number, date: string): Promise<IEmployeeFreeTime[]> {
         const employeeVisits = await this.visitsService.getAllVisitsByDate(id, date)
         const employee = await this.employeeRepository.findOne({
             where: {id},
             relations: ['branch', 'rank']
         })
-        const response: EmployeeFreeTimeInterface[] = []
+        const response: IEmployeeFreeTime[] = []
         let openAt = employee.branch.openAt // get start time
         let closeAt = employee.branch.closeAt // get end time
 

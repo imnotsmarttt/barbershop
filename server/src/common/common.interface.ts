@@ -1,8 +1,8 @@
-export interface SplitDatetimeDto {
+export interface ISplitDatetime {
     date: string
     time: string
 }
 
-export interface FindOneQueryDto {
+export interface IFindOneQuery {
     [key: string]: string | number
 }

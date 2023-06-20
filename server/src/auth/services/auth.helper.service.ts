@@ -1,13 +1,13 @@
 import {Injectable} from '@nestjs/common';
 
 import {LoginBodyDto} from "auth/interfaces/auth.dto";
-import {TokensInterface} from "auth/interfaces/auth.interface";
+import {ITokens} from "auth/interfaces/auth.interface";
 import * as bcrypt from 'bcrypt'
 import {BCRYPT_SALT, JWT_ACCESS_SECRET_KEY, JWT_REFRESH_SECRET_KEY} from "config/config";
 
 import {UsersService} from "users/services/users.service";
 import {JwtService} from "@nestjs/jwt";
-import {CleanUserInterface} from "users/interfaces/users.dto";
+import {ICleanUser} from "users/interfaces/users.interface";
 
 
 @Injectable()
@@ -18,7 +18,7 @@ export class AuthHelperService {
     ) {
     }
 
-    async validateUser(data: LoginBodyDto): Promise<CleanUserInterface | null> {
+    async validateUser(data: LoginBodyDto): Promise<ICleanUser | null> {
         const {username, password} = data
         const user = await this.usersService.findOne({username})
         if (user) {
@@ -30,7 +30,7 @@ export class AuthHelperService {
         return null
     }
 
-    async generateTokens(payload: object): Promise<TokensInterface> {
+    async generateTokens(payload: object): Promise<ITokens> {
         const [accessToken, refreshToken] = await Promise.all([
             this.jwtService.signAsync(payload, {
                 secret: JWT_ACCESS_SECRET_KEY,

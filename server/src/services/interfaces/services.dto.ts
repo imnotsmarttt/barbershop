@@ -1,5 +1,5 @@
 import {IsNotEmpty, IsString} from "class-validator";
-import {RankInterface} from "../../rank/interfaces/rank.interface";
+import {IRank} from "../../rank/interfaces/rank.interface";
 
 export class CreateOrUpdateServicesDto {
     @IsString()

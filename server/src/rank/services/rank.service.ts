@@ -3,7 +3,7 @@ import {CreateOrUpdateRankDto} from "../interfaces/rank.dto";
 import {Repository} from "typeorm";
 import {Rank} from "../rank.entity";
 import {InjectRepository} from "@nestjs/typeorm";
-import {FindOneQueryDto} from "../../common/common.dto";
+import {IFindOneQuery} from "../../common/common.interface";
 import {RankHelperService} from "./rank.helper.service";
 
 @Injectable()
@@ -46,7 +46,7 @@ export class RankService {
         }
     }
 
-    async findOne(query: FindOneQueryDto): Promise<Rank> {
+    async findOne(query: IFindOneQuery): Promise<Rank> {
         const rank = await this.rankRepository.findOneBy(query)
         if (!rank) {
             throw new HttpException('Посаду не знайдено', HttpStatus.NOT_FOUND) // rank not found
