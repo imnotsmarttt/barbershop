@@ -6,10 +6,20 @@ import {BranchController} from './controllers/branch.controller';
 import {BranchAdminController} from "./controllers/branch.admin.controller";
 
 @Module({
-    imports: [TypeOrmModule.forFeature([Branch])],
-    providers: [BranchService],
-    exports: [BranchService, TypeOrmModule],
-    controllers: [BranchController, BranchAdminController]
+    imports: [
+        TypeOrmModule.forFeature([Branch])
+    ],
+    providers: [
+        BranchService
+    ],
+    exports: [
+        BranchService,
+        TypeOrmModule
+    ],
+    controllers: [
+        BranchController,
+        BranchAdminController
+    ]
 })
 export class BranchModule {
 }

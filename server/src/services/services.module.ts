@@ -11,9 +11,17 @@ import {ServicesAdminController} from "./controllers/services.admin.controller";
         RankModule,
         TypeOrmModule.forFeature([Service])
     ],
-    exports: [ServicesService, TypeOrmModule],
-    providers: [ServicesService],
-    controllers: [ServicesController, ServicesAdminController]
+    exports: [
+        ServicesService,
+        TypeOrmModule
+    ],
+    providers: [
+        ServicesService
+    ],
+    controllers: [
+        ServicesController,
+        ServicesAdminController
+    ]
 })
 export class ServicesModule {
 }

@@ -1,30 +1,38 @@
+import * as bcrypt from 'bcrypt'
+
 import {Injectable} from '@nestjs/common';
 
 import {LoginBodyDto} from "auth/interfaces/auth.dto";
 import {ITokens} from "auth/interfaces/auth.interface";
-import * as bcrypt from 'bcrypt'
-import {BCRYPT_SALT, JWT_ACCESS_SECRET_KEY, JWT_REFRESH_SECRET_KEY} from "config/config";
+import {ICleanUser} from "users/interfaces/users.interface";
+
 
 import {UsersService} from "users/services/users.service";
 import {JwtService} from "@nestjs/jwt";
-import {ICleanUser} from "users/interfaces/users.interface";
+import {UsersHelperService} from "users/services/users.helper.service";
+import {UsersRepository} from "users/users.repository";
+
+import {BCRYPT_SALT, JWT_ACCESS_SECRET_KEY, JWT_REFRESH_SECRET_KEY} from "config/config";
 
 
 @Injectable()
 export class AuthHelperService {
     constructor(
-        private usersService: UsersService,
-        private jwtService: JwtService
+        private readonly usersRepository: UsersRepository,
+
+        private readonly usersService: UsersService,
+        private readonly usersHelperService: UsersHelperService,
+        private readonly jwtService: JwtService
     ) {
     }
 
     async validateUser(data: LoginBodyDto): Promise<ICleanUser | null> {
         const {username, password} = data
-        const user = await this.usersService.findOne({username})
+        const user = await this.usersRepository.getOneByUsername(username)
         if (user) {
             const comparePassword = await bcrypt.compare(password, user.password)
             if (comparePassword) {
-                return this.usersService.getCleanUser(user)
+                return this.usersHelperService.getCleanUser(user)
             }
         }
         return null

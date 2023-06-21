@@ -8,7 +8,7 @@ export class UsersController {
     ) {}
 
     @Get(':id')
-    async findOne(@Param('id') id: number) {
-        return await this.usersService.findOneWithError({id})
+    async findOne(@Param('id') id: string) {
+        return await this.usersService.getOneWithError(parseInt(id))
     }
 }

@@ -1,23 +1,31 @@
+import {unlink} from "fs/promises";
+
 import {forwardRef, HttpException, HttpStatus, Inject, Injectable} from '@nestjs/common';
+
 import {Repository} from "typeorm";
-import {Employee} from "../employee.entity";
 import {InjectRepository} from "@nestjs/typeorm";
+import {Employee} from "employee/employee.entity";
+import {UsersRepository} from "users/users.repository";
+
 import {CreateOrUpdateEmployeeDto} from "employee/interfaces/employee.dto";
 import {IEmployee, IFindAllEmployeeResult} from "employee/interfaces/IEmployee";
+import {IFindOneQuery} from "common/common.interface";
+
 import {BranchService} from "branch/services/branch.service";
 import {RankService} from "rank/services/rank.service";
 import {UsersService} from "users/services/users.service";
-import {IFindOneQuery} from "common/common.interface";
-import {unlink} from "fs/promises";
 import {VisitsService} from "visits/services/visits.service";
 import {ServicesService} from "services/services/services.service";
 import {CommonService} from "common/common.service";
+
 
 @Injectable()
 export class EmployeeService {
     constructor(
         @InjectRepository(Employee)
         private readonly employeeRepository: Repository<Employee>,
+        private readonly usersRepository: UsersRepository,
+
         private readonly branchService: BranchService,
         private readonly rankService: RankService,
         private readonly usersService: UsersService,
@@ -37,7 +45,7 @@ export class EmployeeService {
         } = data
         const empBranch = await this.branchService.findOne({id: branchId})
         const empRank = await this.rankService.findOne({id: rankId})
-        const empUser = await this.usersService.findOneWithError({id: userId})
+        const empUser = await this.usersRepository.getOneByIdWithError(userId)
 
         const createdEmployee = await this.employeeRepository.create({
             firstName, lastName,

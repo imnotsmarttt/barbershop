@@ -7,12 +7,17 @@ import * as bcrypt from 'bcrypt'
 import {UsersService} from "users/services/users.service";
 import {ICleanUser} from "users/interfaces/users.interface";
 import {AuthHelperService} from "./auth.helper.service";
+import {UsersHelperService} from "users/services/users.helper.service";
+import {UsersRepository} from "users/users.repository";
 
 
 @Injectable()
 export class AuthService {
     constructor(
+        private readonly usersRepository: UsersRepository,
+
         private usersService: UsersService,
+        private usersHelperService: UsersHelperService,
         private authHelperService: AuthHelperService
     ) {
     }
@@ -20,7 +25,7 @@ export class AuthService {
     // controller utils
     async register(data: RegisterBodyDto): Promise<IAuthFinished> {
         const {username, password, password2} = data
-        const userExist = await this.usersService.findOne({username})
+        const userExist = await this.usersRepository.getOneByUsername(username)
         if (userExist) {
             throw new HttpException(`Користувач з таким ім'ям зареєстрований`, HttpStatus.CONFLICT) // user with this username exist
         }
@@ -53,7 +58,7 @@ export class AuthService {
     }
 
     async refreshTokens(userId: number, token: string): Promise<IAuthFinished> {
-        const user = await this.usersService.findOne({id: userId})
+        const user = await this.usersRepository.getOneById(userId)
         if (!user || !user.refreshToken) {
             throw new HttpException('Дозвіл заборонено', HttpStatus.UNAUTHORIZED) // Access denied
         }
@@ -62,7 +67,7 @@ export class AuthService {
             throw new HttpException('Дозвіл заборонено', HttpStatus.UNAUTHORIZED) // Access denied
         }
 
-        const cleanUser = this.usersService.getCleanUser(user)
+        const cleanUser = this.usersHelperService.getCleanUser(user)
         const tokens = await this.authHelperService.generateTokens(cleanUser)
         await this.authHelperService.updateRefreshToken(cleanUser.id, tokens.refreshToken)
 
